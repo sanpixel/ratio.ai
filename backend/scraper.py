@@ -92,15 +92,32 @@ class RecipeScraper:
         # Extract ingredients
         ingredients = []
         recipe_ingredients = data.get('recipeIngredient', [])
-        
+
+        # Detect ingredient sections or groups
+        ingredient_sections = []
+        current_section = []
+
+        # Parse ingredients considering sections
         for ingredient in recipe_ingredients:
             if isinstance(ingredient, str):
-                ingredients.append(ingredient.strip())
+                stripped_ingredient = ingredient.strip()
+                # Check for section headers (simple heuristic for demonstration purposes)
+                if stripped_ingredient.endswith(':'):
+                    # Save previous section
+                    if current_section:
+                        ingredient_sections.append(current_section)
+                        current_section = []
+                else:
+                    current_section.append(stripped_ingredient)
             elif isinstance(ingredient, dict):
                 # Sometimes ingredients are objects
-                text = ingredient.get('text', str(ingredient))
-                ingredients.append(text.strip())
-        
+                text = ingredient.get('text', str(ingredient)).strip()
+                current_section.append(text)
+
+        # Add last section if not empty
+        if current_section:
+            ingredient_sections.append(current_section)
+
         # Extract instructions (optional for now)
         instructions = []
         recipe_instructions = data.get('recipeInstructions', [])
@@ -111,28 +128,45 @@ class RecipeScraper:
             elif isinstance(instruction, dict):
                 text = instruction.get('text', str(instruction))
                 instructions.append(text.strip())
-        
-        return {
-            'title': title,
-            'ingredients': ingredients,
-            'instructions': instructions
-        }
+                
+        # If we detected sections, return them; otherwise return as single section
+        if ingredient_sections and len(ingredient_sections) > 1:
+            return {
+                'title': title,
+                'ingredient_sections': ingredient_sections,
+                'ingredients': [item for section in ingredient_sections for item in section],  # Flat list for compatibility
+                'instructions': instructions
+            }
+        else:
+            # Single section or no sections detected
+            all_ingredients = [item for section in ingredient_sections for item in section] if ingredient_sections else ingredients
+            return {
+                'title': title,
+                'ingredient_sections': [all_ingredients] if all_ingredients else [],
+                'ingredients': all_ingredients,
+                'instructions': instructions
+            }
     
     def _extract_from_html(self, soup: BeautifulSoup, url: str) -> Optional[Dict]:
         """
         Fallback HTML parsing for sites without proper structured data.
+        Enhanced to detect ingredient sections.
         """
         try:
             # Try common HTML patterns
             title = self._extract_title(soup)
-            ingredients = self._extract_ingredients_html(soup)
+            ingredient_sections = self._extract_ingredient_sections_html(soup)
             
-            if not ingredients:
+            if not ingredient_sections:
                 return None
+            
+            # Flatten for backward compatibility
+            all_ingredients = [item for section in ingredient_sections for item in section]
             
             return {
                 'title': title,
-                'ingredients': ingredients,
+                'ingredient_sections': ingredient_sections,
+                'ingredients': all_ingredients,
                 'instructions': []
             }
             
@@ -185,3 +219,70 @@ class RecipeScraper:
                     break  # Use first successful extraction
         
         return ingredients
+    
+    def _extract_ingredient_sections_html(self, soup: BeautifulSoup) -> List[List[str]]:
+        """Extract ingredients with section detection from HTML."""
+        ingredient_sections = []
+        current_section = []
+        
+        # Try to find ingredient sections by looking for headers followed by lists
+        # Look for common patterns like h3/h4 headers followed by ul/li elements
+        ingredient_containers = soup.select('.recipe-ingredients, .ingredients, .ingredient-list, [class*="ingredient"]')
+        
+        for container in ingredient_containers:
+            # Look for section headers (h2, h3, h4, strong, etc.) within the container
+            elements = container.find_all(['h2', 'h3', 'h4', 'h5', 'strong', 'b', 'li', 'p'])
+            
+            for element in elements:
+                text = element.get_text().strip()
+                
+                # Skip empty elements
+                if not text or len(text) < 3:
+                    continue
+                
+                # Check if this looks like a section header
+                is_header = (
+                    element.name in ['h2', 'h3', 'h4', 'h5'] or
+                    element.name in ['strong', 'b'] or
+                    text.endswith(':') or
+                    (len(text.split()) <= 3 and text.lower() in ['seasoning', 'sauce', 'garlic butter', 'topping', 'dressing', 'marinade'])
+                )
+                
+                if is_header:
+                    # Save current section if it has ingredients
+                    if current_section:
+                        ingredient_sections.append(current_section)
+                        current_section = []
+                else:
+                    # This looks like an ingredient
+                    # Additional filtering for ingredient-like text
+                    if self._looks_like_ingredient(text):
+                        current_section.append(text)
+            
+            # Save last section
+            if current_section:
+                ingredient_sections.append(current_section)
+                current_section = []
+        
+        # If no sections found, try the old method as a single section
+        if not ingredient_sections:
+            ingredients = self._extract_ingredients_html(soup)
+            if ingredients:
+                ingredient_sections = [ingredients]
+        
+        return ingredient_sections
+    
+    def _looks_like_ingredient(self, text: str) -> bool:
+        """Heuristic to determine if text looks like an ingredient."""
+        # Skip obvious non-ingredients
+        if text.lower() in ['ingredients', 'instructions', 'method', 'notes', 'tips']:
+            return False
+        
+        # Look for quantity patterns (numbers, fractions)
+        has_quantity = bool(re.search(r'\d+|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞', text))
+        
+        # Look for unit patterns
+        has_unit = bool(re.search(r'\b(cup|tablespoon|teaspoon|gram|ounce|pound|ml|l|tbsp|tsp|g|oz|lbs?)s?\b', text, re.IGNORECASE))
+        
+        # Most ingredients have quantities or units, or are short descriptive phrases
+        return has_quantity or has_unit or (len(text.split()) <= 8 and len(text) > 3)

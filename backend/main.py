@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 from typing import List, Dict, Any
 import logging
+import re
 
 from scraper import RecipeScraper
 from parser import RecipeParser
@@ -30,6 +31,7 @@ class IngredientData(BaseModel):
     name: str
     quantity: float
     unit: str
+    grams: float = 0.0
     original_text: str
     was_normalized: bool = False
 
@@ -62,7 +64,19 @@ async def process_recipe(request: RecipeRequest):
         
         # Step 2: Parse ingredients using NLP
         parser = RecipeParser()
-        parsed_ingredients = parser.parse_ingredients(recipe_data["ingredients"])
+        
+        # Deduplicate ingredients first (in case scraper found multiple sections)
+        unique_ingredients = []
+        seen_ingredients = set()
+        
+        for ingredient_text in recipe_data["ingredients"]:
+            # Normalize for comparison (remove spaces, convert to lowercase)
+            normalized_for_comparison = re.sub(r'\s+', ' ', ingredient_text.lower().strip())
+            if normalized_for_comparison not in seen_ingredients:
+                unique_ingredients.append(ingredient_text)
+                seen_ingredients.add(normalized_for_comparison)
+        
+        parsed_ingredients = parser.parse_ingredients(unique_ingredients)
         
         # Step 3: Calculate ratios
         calculator = RatioCalculator()
@@ -71,10 +85,13 @@ async def process_recipe(request: RecipeRequest):
         # Format response
         ingredients_data = []
         for ingredient in parsed_ingredients:
+            # Calculate grams for display
+            grams = calculator._convert_to_grams(ingredient)
             ingredients_data.append(IngredientData(
                 name=ingredient["name"],
                 quantity=ingredient["quantity"],
                 unit=ingredient["unit"],
+                grams=grams,
                 original_text=ingredient["original_text"],
                 was_normalized=ingredient.get("was_normalized", False)
             ))
