@@ -72,17 +72,44 @@ The API will be running at `http://localhost:8000`
 
 The frontend will be running at `http://localhost:3000`
 
+## Features
+
+### Recipe Processing
+- **Smart Web Scraping:** Supports JSON-LD structured data and HTML fallback parsing
+- **Unicode Support:** Handles special characters (▢, •) and unicode fractions (½, ¼, ¾)
+- **Ingredient Deduplication:** Automatically removes duplicate ingredients from multi-section recipes
+- **Advanced Parsing:** Custom regex-based ingredient parsing with quantity, unit, and name extraction
+
+### Ingredient Intelligence
+- **Category Recognition:** Automatically categorizes ingredients (flour, liquid, egg, fat, sugar, etc.)
+- **Specific Sugar Types:** Preserves distinctions between brown sugar, white sugar, powdered sugar, etc.
+- **Unit Normalization:** Converts "tablespoons" to "tbls" while preserving "teaspoons" as "tsps"
+- **Density Conversion:** Accurate gram conversions using ingredient-specific densities
+
+### Ratio Calculation
+- **Single-Digit Ratios:** Clean, memorable ratios like 5:1:3 based on percentage rounding
+- **Four-Ingredient Focus:** Always displays flour:liquid:egg:fat in consistent order
+- **Smart Filtering:** Excludes seasonings and very small quantities (<20g) from main ratios
+- **Real-time Updates:** Ratios recalculate instantly when ingredients are edited
+
+### User Interface
+- **Editable Table:** All ingredient values can be modified directly in the interface
+- **Debug Column:** Shows original recipe text alongside normalized ingredients
+- **Color Coding:** Visual categorization with colors (green=flour, blue=liquid, orange=fat, pink=sugar)
+- **Bold Highlighting:** Normalized ingredients appear in bold to indicate processing
+- **Clean Display:** Large, prominent ratio display with category labels underneath
+
 ## Current Status
 
 ✅ **Phase 1 MVP - COMPLETE:**
 - ✅ Project structure created
 - ✅ FastAPI backend with full recipe processing pipeline
 - ✅ Web scraping with JSON-LD and HTML fallback parsing
-- ✅ Ingredient parsing using NLP (ingredient-parser library)
+- ✅ Ingredient parsing using custom regex-based NLP
 - ✅ Smart ratio calculation with unit conversion
 - ✅ React frontend with URL input and recipe cards
 - ✅ Editable ingredient fields with real-time ratio recalculation
-- ✅ Clean ratio display with grouping (volume, weight, count)
+- ✅ Clean ratio display with intuitive presentation (e.g. 5:1:3)
 - ✅ Error handling and loading states
 - ✅ Test script for verifying functionality
 
@@ -123,7 +150,7 @@ python test_scraper.py
 
 ## Architecture
 
-- **Backend:** FastAPI + BeautifulSoup + NLP libraries
+- **Backend:** FastAPI + BeautifulSoup + custom regex patterns
 - **Frontend:** React + TypeScript + Tailwind CSS
 - **Communication:** REST API calls from frontend to backend
 

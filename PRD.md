@@ -18,26 +18,35 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
 
 ## Core Features
 
-### Phase 1 (MVP)
-1. **URL Input**: Simple interface to paste recipe URLs
-2. **Ingredient Extraction**: Parse recipe pages to extract ingredient lists
-3. **Ratio Optimization**: 
-   - Convert measurements to memorable ratios (e.g., "2 cups flour, 1 cup sugar, 1/2 cup butter" becomes "4:2:1 ratio")
-   - Group and combine similar measurements
-   - Standardize units for consistency
-   - Display both exact measurements and simplified ratios
-4. **Clean Table Display**: 
+### Phase 1 (MVP) - ✅ COMPLETE
+1. **URL Input**: ✅ Simple interface to paste recipe URLs
+2. **Ingredient Extraction**: ✅ Parse recipe pages to extract ingredient lists
+   - Supports JSON-LD structured data and HTML fallback
+   - Handles unicode fractions (½, ¼) and special characters (▢, •)
+   - Automatically deduplicates ingredients from multi-section recipes
+3. **Ratio Optimization**: ✅ 
+   - Convert measurements to memorable single-digit ratios (e.g., "5:1:3")
+   - Smart percentage-based rounding for clean numbers
+   - Consistent flour:liquid:egg:fat ordering
+   - Excludes seasonings and small quantities from main ratios
+4. **Clean Table Display**: ✅ 
    - Recipe title and link back to original source
-   - Simple table format with editable fields for ALL data (quantity, unit, ingredient name)
+   - Editable table with quantity, unit, grams, ingredient name, and debug columns
    - Real-time ratio recalculation as values change
-   - Clear measurements and ratios below table
-   - No unnecessary styling or bloat - pure functionality
+   - Large, prominent ratio display with category labels
+   - Color-coded ingredient categories (green=flour, orange=fat, etc.)
+   - Bold highlighting for normalized ingredients
 
 ### Phase 2 (Future)
 1. **Concise Instructions**: Optional very brief cooking steps
 2. **Recipe Scaling**: Adjust quantities for different serving sizes
 3. **Shopping List Export**: Generate clean shopping lists
 4. **Recipe Saving**: Save processed recipes for later
+5. **Recipe Quick Access**: Add previously searched recipes to a persistent favorites/quick access section
+   - Display frequently used or bookmarked recipes as clickable buttons
+   - Color-coded recipe categories for easy visual identification
+   - One-click access to re-process favorite recipes
+   - Similar to current debug section but user-customizable
 
 ### Phase 3 (Advanced)
 1. **Recipe Library**: Goodreads-style personal recipe collection
