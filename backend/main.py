@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="ratio.ai API", version="1.0.0")
 
-# Enable CORS for frontend
+# Enable CORS for frontend - Allow all origins for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
