@@ -1,9 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
 from typing import List, Dict, Any
 import logging
 import re
+import os
+from pathlib import Path
 
 from scraper import RecipeScraper
 from parser import RecipeParser
@@ -23,6 +27,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static files (built React app)
+static_dir = Path(__file__).parent.parent / "frontend" / "build"
+if static_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(static_dir / "static")), name="static")
+    
+    # Serve React app for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        # If it's an API route, let it pass through to the API handlers
+        if full_path.startswith("api/") or full_path in ["health", "docs", "redoc", "openapi.json"]:
+            # This won't actually be called for API routes due to route precedence
+            pass
+        
+        # For all other routes, serve the React index.html
+        index_file = static_dir / "index.html"
+        if index_file.exists():
+            return FileResponse(str(index_file))
+        else:
+            return {"message": "React build not found. Run 'npm run build' in frontend directory."}
+else:
+    logger.warning("Frontend build directory not found. API-only mode.")
 
 class RecipeRequest(BaseModel):
     url: HttpUrl
@@ -47,7 +73,7 @@ class RecipeResponse(BaseModel):
 async def root():
     return {"message": "Welcome to ratio.ai API"}
 
-@app.post("/process-recipe", response_model=RecipeResponse)
+@app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):
     """
     Process a recipe URL and return clean ingredient ratios
@@ -118,7 +144,7 @@ async def process_recipe(request: RecipeRequest):
 class RecalculateRequest(BaseModel):
     ingredients: List[IngredientData]
 
-@app.post("/recalculate-ratios")
+@app.post("/api/recalculate-ratios")
 async def recalculate_ratios(request: RecalculateRequest):
     """
     Recalculate ratios for edited ingredients without re-scraping.
@@ -150,10 +176,12 @@ async def recalculate_ratios(request: RecalculateRequest):
             'error': str(e)
         }
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Use PORT environment variable for Cloud Run, fallback to 8000 for local development
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

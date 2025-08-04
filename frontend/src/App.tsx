@@ -57,7 +57,7 @@ function App() {
     setRecipe(null);
 
     try {
-      const response = await axios.post('http://192.168.86.51:8000/process-recipe', {
+      const response = await axios.post('/api/process-recipe', {
         url: url
       });
       
@@ -121,7 +121,7 @@ function App() {
     // Recalculate ratios with updated ingredients (only for quantity/unit changes)
     if (field === 'quantity' || field === 'unit') {
       try {
-        const response = await axios.post('http://192.168.86.51:8000/recalculate-ratios', {
+        const response = await axios.post('/api/recalculate-ratios', {
           ingredients: updatedIngredients
         });
         
