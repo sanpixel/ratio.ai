@@ -34,11 +34,26 @@ logger.info(f"Looking for React build at: {static_dir}")
 logger.info(f"Static directory exists: {static_dir.exists()}")
 
 if static_dir.exists():
-    # Mount static assets
+    # Mount static assets (JS/CSS)
     static_assets_dir = static_dir / "static"
     if static_assets_dir.exists():
         app.mount("/static", StaticFiles(directory=str(static_assets_dir)), name="static")
         logger.info(f"Mounted static assets from: {static_assets_dir}")
+    
+    # Mount media files directly from build directory
+    @app.get("/loading-video.mp4")
+    async def serve_loading_video():
+        video_file = static_dir / "loading-video.mp4"
+        if video_file.exists():
+            return FileResponse(str(video_file), media_type="video/mp4")
+        return {"error": "Video not found"}
+    
+    @app.get("/loading-animation.gif")
+    async def serve_loading_gif():
+        gif_file = static_dir / "loading-animation.gif"
+        if gif_file.exists():
+            return FileResponse(str(gif_file), media_type="image/gif")
+        return {"error": "GIF not found"}
     
     # Serve React app for root and all non-API routes
     @app.get("/{full_path:path}")
