@@ -29,26 +29,38 @@ app.add_middleware(
 )
 
 # Serve static files (built React app)
-static_dir = Path(__file__).parent.parent / "frontend" / "build"
+static_dir = Path(__file__).parent / "frontend" / "build"
+logger.info(f"Looking for React build at: {static_dir}")
+logger.info(f"Static directory exists: {static_dir.exists()}")
+
 if static_dir.exists():
-    app.mount("/static", StaticFiles(directory=str(static_dir / "static")), name="static")
+    # Mount static assets
+    static_assets_dir = static_dir / "static"
+    if static_assets_dir.exists():
+        app.mount("/static", StaticFiles(directory=str(static_assets_dir)), name="static")
+        logger.info(f"Mounted static assets from: {static_assets_dir}")
     
-    # Serve React app for all non-API routes
+    # Serve React app for root and all non-API routes
     @app.get("/{full_path:path}")
-    async def serve_react_app(full_path: str):
+    async def serve_react_app(full_path: str = ""):
         # If it's an API route, let it pass through to the API handlers
         if full_path.startswith("api/") or full_path in ["health", "docs", "redoc", "openapi.json"]:
             # This won't actually be called for API routes due to route precedence
             pass
         
-        # For all other routes, serve the React index.html
+        # For root route and all other routes, serve the React index.html
         index_file = static_dir / "index.html"
+        logger.info(f"Trying to serve: {index_file}")
         if index_file.exists():
             return FileResponse(str(index_file))
         else:
-            return {"message": "React build not found. Run 'npm run build' in frontend directory."}
+            return {"message": f"React build not found at {index_file}. Available files: {list(static_dir.glob('*')) if static_dir.exists() else 'Directory does not exist'}"}
 else:
-    logger.warning("Frontend build directory not found. API-only mode.")
+    logger.warning(f"Frontend build directory not found at {static_dir}. API-only mode.")
+    # Fallback root endpoint when no React build is available
+    @app.get("/")
+    async def root():
+        return {"message": "Welcome to ratio.ai API - React build not found"}
 
 class RecipeRequest(BaseModel):
     url: HttpUrl
@@ -69,9 +81,7 @@ class RecipeResponse(BaseModel):
     success: bool
     error: str = None
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to ratio.ai API"}
+# Root endpoint will be handled by the catch-all route below
 
 @app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):
