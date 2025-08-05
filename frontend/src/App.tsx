@@ -225,8 +225,7 @@ function App() {
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 style={{
-                  backgroundColor: '#87CEEB',
-                  ':hover': { backgroundColor: '#6EB6D6' }
+                  backgroundColor: '#87CEEB'
                 }}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
@@ -367,41 +366,41 @@ function App() {
 
   // Normal app rendering after loading is complete
   return (
-    <div className="min-h-screen py-12 px-4" style={{ background: '#87CEEB' }}>
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen py-6 sm:py-12 px-4" style={{ background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+      <div className="max-w-6xl mx-auto">
         {/* Header - Always visible */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">ratio.ai</h1>
-          <p className="text-xl text-gray-600">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#87CEEB'}}>ratio.ai</h1>
+          <p className="text-lg sm:text-xl text-gray-300 px-4">
             Transform bloated recipes into clean, memorable ratios
           </p>
         </div>
 
         {/* Debug Section - Test Recipe Links */}
-        <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">🐛 Debug - Test Recipe Links</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+        <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
             <button
               onClick={() => setUrl('https://www.recipetineats.com/corn-ribs/')}
-              className="p-2 bg-green-100 hover:bg-green-200 text-green-800 rounded text-left"
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
             >
               🌽 Corn Ribs
             </button>
             <button
               onClick={() => setUrl('https://feelgoodfoodie.net/recipe/skinny-broccoli-shrimp-pasta-alfredo/#wprm-recipe-container-5888')}
-              className="p-2 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded text-left"
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
             >
               🍤 Broccoli Shrimp Alfredo
             </button>
             <button
               onClick={() => setUrl('https://www.loveandlemons.com/focaccia/')}
-              className="p-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded text-left"
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
             >
               🍞 Focaccia
             </button>
             <button
               onClick={() => setUrl('https://pinchofyum.com/the-best-soft-chocolate-chip-cookies')}
-              className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded text-left"
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
             >
               🍪 Chocolate Chip Cookies
             </button>
@@ -410,20 +409,23 @@ function App() {
 
         {/* URL Input Form - Only show when no recipe */}
         {!recipe && (
-          <form onSubmit={handleSubmit} className="mb-8">
-            <div className="flex gap-4">
+          <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <input
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="Paste recipe URL here..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent text-gray-200 placeholder-gray-400"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                style={{
+                  backgroundColor: '#87CEEB'
+                }}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
               </button>
@@ -433,7 +435,7 @@ function App() {
         
         {/* Error Display */}
         {error && (
-          <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          <div className="mb-6 sm:mb-8 p-4 bg-red-900 border border-red-600 text-red-200 rounded-lg">
             {error}
           </div>
         )}
