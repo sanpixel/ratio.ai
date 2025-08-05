@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, HttpUrl
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from sqlalchemy.orm import Session
 import logging
 import re
 import os
@@ -12,12 +13,20 @@ from pathlib import Path
 from scraper import RecipeScraper
 from parser import RecipeParser
 from ratios import RatioCalculator
+from database import get_db, create_tables
+from models import User, SavedRecipe
+from auth import verify_google_token, create_access_token, get_current_user
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="ratio.ai API", version="1.0.0")
+
+# Create database tables on startup
+@app.on_event("startup")
+async def startup_event():
+    create_tables()
 
 # Enable CORS for frontend - Allow all origins for development
 app.add_middleware(
@@ -97,6 +106,62 @@ class RecipeResponse(BaseModel):
     error: str = None
 
 # Root endpoint will be handled by the catch-all route below
+
+@app.post("/api/auth/google")
+async def google_login(token: str, db: Session = Depends(get_db)):
+    user_info = await verify_google_token(token)
+    
+    # Check if user already exists
+    user = db.query(User).filter(User.google_id == user_info["sub"]).first()
+    
+    if not user:
+        # Create a new user
+        user = User(
+            google_id=user_info["sub"],
+            email=user_info["email"],
+            name=user_info.get("name", ""),
+            picture=user_info.get("picture"),
+        )
+        db.add(user)
+        db.commit()
+    
+    # Create a JWT token for the user
+    access_token = create_access_token({"sub": str(user.id)})
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/api/save-recipe")
+async def save_recipe(
+    recipe: RecipeResponse,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Save a processed recipe for the authenticated user"""
+    saved_recipe = SavedRecipe(
+        user_id=user.id,
+        title=recipe.title,
+        url=recipe.url,
+        ingredients=[ingredient.dict() for ingredient in recipe.ingredients],
+        ratios=recipe.ratios
+    )
+    db.add(saved_recipe)
+    db.commit()
+    return {"message": "Recipe saved successfully"}
+
+@app.get("/api/user")
+async def get_user(user: User = Depends(get_current_user)):
+    """Get current authenticated user info"""
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "picture": user.picture
+    }
+
+@app.get("/api/saved-recipes")
+async def get_saved_recipes(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get all saved recipes for the authenticated user"""
+    return db.query(SavedRecipe).filter(SavedRecipe.user_id == user.id).all()
 
 @app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):

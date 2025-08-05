@@ -36,13 +36,6 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
    - Large, prominent ratio display with category labels
    - Color-coded ingredient categories (green=flour, orange=fat, etc.)
    - Bold highlighting for normalized ingredients
-5. **Flippable Recipe Card**: 🔄 IN PROGRESS
-   - Recipe processing table as a flippable card component
-   - Front side: ingredient table with ratios (current view)
-   - Back side: concise, editable cooking instructions
-   - Flip button to toggle between ingredients and instructions
-   - Print button for physical recipe reference
-   - Card maintains consistent styling and mobile responsiveness
 
 ### Phase 2 (Future)
 1. **Enhanced Instructions**: Expanded instruction features
@@ -59,14 +52,21 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
    - Similar to current debug section but user-customizable
 
 ### Phase 3 (Advanced)
-1. **Recipe Library**: Goodreads-style personal recipe collection
+1. **Flippable Recipe Card**: IN PROGRESS
+   - Recipe processing table as a flippable card component
+   - Front side: ingredient table with ratios (current view)
+   - Back side: concise, editable cooking instructions
+   - Flip button to toggle between ingredients and instructions
+   - Print button for physical recipe reference
+   - Card maintains consistent styling and mobile responsiveness
+2. **Recipe Library**: Goodreads-style personal recipe collection
    - Save and organize favorite recipes
    - Tag recipes by cuisine, difficulty, meal type
    - Rate and review processed recipes
    - Search personal recipe history
-2. **Premium Site Access**: Handle login-required sites (NYT Cooking, etc.)
-3. **Ratio Learning**: Help users memorize common ratios across similar dishes
-4. **Social Features**: Share favorite recipe ratios with friends
+3. **Premium Site Access**: Handle login-required sites (NYT Cooking, etc.)
+4. **Ratio Learning**: Help users memorize common ratios across similar dishes
+5. **Social Features**: Share favorite recipe ratios with friends
 
 ### Phase 4 (Future Vision)
 1. **YouTube Recipe Processing**: Extract and process YouTube recipe videos

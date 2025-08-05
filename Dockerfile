@@ -1,6 +1,10 @@
 # Multi-stage build for React + FastAPI deployment
 FROM node:18-alpine AS frontend-builder
 
+# Accept build arguments for React environment variables
+ARG REACT_APP_GOOGLE_CLIENT_ID
+ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
+
 # Set working directory for frontend build
 WORKDIR /frontend
 
@@ -13,7 +17,7 @@ RUN npm ci --only=production
 # Copy frontend source code
 COPY frontend/ ./
 
-# Build the React application
+# Build the React application with environment variables
 RUN npm run build
 
 # Python stage for backend
