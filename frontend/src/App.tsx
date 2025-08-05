@@ -118,8 +118,12 @@ useEffect(() => {
   useEffect(() => {
     const initializeGoogleSignIn = () => {
       try {
+        const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+        console.log('Google Client ID:', clientId ? 'Loaded' : 'Not found');
+        console.log('Client ID value:', clientId);
+        
         window.google.accounts.id.initialize({
-          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
+          client_id: clientId || 'YOUR_GOOGLE_CLIENT_ID',
           callback: handleGoogleResponse
         });
 
