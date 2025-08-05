@@ -1,6 +1,10 @@
 # Multi-stage build for React + FastAPI deployment
 FROM node:18-alpine AS frontend-builder
 
+# Add an argument for the React Google Client ID and set it as an env var for the build
+ARG REACT_APP_GOOGLE_CLIENT_ID
+ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
+
 # Set working directory for frontend build
 WORKDIR /frontend
 
