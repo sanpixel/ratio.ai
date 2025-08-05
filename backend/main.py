@@ -64,21 +64,6 @@ if static_dir.exists():
             return FileResponse(str(gif_file), media_type="image/gif")
         return {"error": "GIF not found"}
     
-    # Serve React app for root and all non-API routes
-    @app.get("/{full_path:path}")
-    async def serve_react_app(full_path: str = ""):
-        # If it's an API route, let it pass through to the API handlers
-        if full_path.startswith("api/") or full_path in ["health", "docs", "redoc", "openapi.json"]:
-            # This won't actually be called for API routes due to route precedence
-            pass
-        
-        # For root route and all other routes, serve the React index.html
-        index_file = static_dir / "index.html"
-        logger.info(f"Trying to serve: {index_file}")
-        if index_file.exists():
-            return FileResponse(str(index_file))
-        else:
-            return {"message": f"React build not found at {index_file}. Available files: {list(static_dir.glob('*')) if static_dir.exists() else 'Directory does not exist'}"}
 else:
     logger.warning(f"Frontend build directory not found at {static_dir}. API-only mode.")
     # Fallback root endpoint when no React build is available
@@ -272,6 +257,18 @@ async def recalculate_ratios(request: RecalculateRequest):
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy"}
+
+# Serve React app for root and all non-API routes (MUST be last!)
+if static_dir.exists():
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str = ""):
+        # For root route and all other routes, serve the React index.html
+        index_file = static_dir / "index.html"
+        logger.info(f"Serving React app for path: {full_path}")
+        if index_file.exists():
+            return FileResponse(str(index_file))
+        else:
+            return {"message": f"React build not found at {index_file}. Available files: {list(static_dir.glob('*')) if static_dir.exists() else 'Directory does not exist'}"}
 
 if __name__ == "__main__":
     import uvicorn
