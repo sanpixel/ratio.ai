@@ -194,7 +194,7 @@ useEffect(() => {
       });
       console.log('User data received:', res.data);
       setUser(res.data);
-      loadSavedRecipes(authToken);
+      loadSavedRecipes(authToken || undefined);
     } catch (error: any) {
       console.error('Error fetching user data:', error);
       console.error('Error details:', error.response?.data);
@@ -203,6 +203,10 @@ useEffect(() => {
 
   const loadSavedRecipes = async (token?: string) => {
     const authToken = token || accessToken;
+    if (!authToken) {
+      console.log('No auth token available for loading saved recipes');
+      return;
+    }
     try {
       const res = await axios.get('/api/saved-recipes', {
         headers: {
