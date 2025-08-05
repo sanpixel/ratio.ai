@@ -176,35 +176,37 @@ useEffect(() => {
       const { access_token } = res.data;
       localStorage.setItem('access_token', access_token);
       setAccessToken(access_token);
-      await fetchUserData();
+      await fetchUserData(access_token);
     } catch (error: any) {
       console.error('Sign-in error:', error);
       alert('Sign-in failed: ' + (error.response?.data?.detail || error.message));
     }
   };
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (token?: string) => {
+    const authToken = token || accessToken;
     try {
-      console.log('Fetching user data with token:', accessToken ? 'Token exists' : 'No token');
+      console.log('Fetching user data with token:', authToken ? 'Token exists' : 'No token');
       const res = await axios.get('/api/user', {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${authToken}`
         }
       });
       console.log('User data received:', res.data);
       setUser(res.data);
-      loadSavedRecipes();
+      loadSavedRecipes(authToken);
     } catch (error: any) {
       console.error('Error fetching user data:', error);
       console.error('Error details:', error.response?.data);
     }
   };
 
-  const loadSavedRecipes = async () => {
+  const loadSavedRecipes = async (token?: string) => {
+    const authToken = token || accessToken;
     try {
       const res = await axios.get('/api/saved-recipes', {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${authToken}`
         }
       });
       setSavedRecipes(res.data);
