@@ -48,6 +48,9 @@ jobs:
         service: ${{ env.SERVICE }}
         region: ${{ env.REGION }}
         image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ratio-ai/${{ env.SERVICE }}:${{ github.sha }}
+        labels: |
+          managed-by=github-actions
+          commit-sha=${{ github.sha }}
 
     - name: Show Output
       run: echo ${{ steps.deploy.outputs.url }}
