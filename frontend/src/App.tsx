@@ -171,7 +171,7 @@ function App() {
           <div className="max-w-6xl mx-auto">
             {/* Header - Always visible */}
             <div className="text-center mb-8 sm:mb-12">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#87CEEB'}}>ratio.ai</h1>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>ratio.ai</h1>
               <p className="text-lg sm:text-xl text-gray-300 px-4">
                 Transform bloated recipes into clean, memorable ratios
               </p>
@@ -225,7 +225,7 @@ function App() {
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 style={{
-                  backgroundColor: '#87CEEB'
+                  backgroundColor: '#4A9EFF'
                 }}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
@@ -314,7 +314,7 @@ function App() {
 
           {recipe.ratios['Main Ratio'] && (
             <div className="mb-8 text-center p-4 sm:p-6 bg-gray-700 rounded-lg border border-gray-600">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#87CEEB'}}>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>
                 {recipe.ratios['Main Ratio'].ratio_string}
               </h2>
               <p className="text-sm sm:text-base text-gray-300">
@@ -343,7 +343,7 @@ function App() {
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 style={{
-                  backgroundColor: '#87CEEB'
+                  backgroundColor: '#4A9EFF'
                 }}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
@@ -370,7 +370,7 @@ function App() {
       <div className="max-w-6xl mx-auto">
         {/* Header - Always visible */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#87CEEB'}}>ratio.ai</h1>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>ratio.ai</h1>
           <p className="text-lg sm:text-xl text-gray-300 px-4">
             Transform bloated recipes into clean, memorable ratios
           </p>
@@ -424,7 +424,7 @@ function App() {
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 style={{
-                  backgroundColor: '#87CEEB'
+                  backgroundColor: '#4A9EFF'
                 }}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
