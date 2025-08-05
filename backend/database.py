@@ -3,8 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base
 
-# Database URL - use PostgreSQL for production, SQLite for development
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./ratio_ai.db")
+# Database URL - use in-memory SQLite for Cloud Run, file SQLite for local development
+# In-memory SQLite won't persist data but works on read-only filesystems like Cloud Run
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///:memory:" if os.getenv("PORT") else "sqlite:///./ratio_ai.db")
 
 # For SQLite, we need to handle some connection parameters
 if DATABASE_URL.startswith("sqlite"):
