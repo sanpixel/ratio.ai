@@ -20,6 +20,29 @@ interface Recipe {
   error?: string;
 }
 
+interface SavedRecipe {
+  id: number;
+  title: string;
+  url: string;
+  ingredients: Ingredient[];
+  ratios: any;
+  created_at: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  picture?: string;
+}
+
+// Global Google types
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
 function App() {
   const [url, setUrl] = useState('');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -28,6 +51,13 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showMainApp, setShowMainApp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  
+  // Authentication state
+  const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(() => {
+    return localStorage.getItem('access_token');
+  });
+  const [savedRecipes, setSavedRecipes] = useState<SavedRecipe[]>([]);
   
   // Debug flag to disable video animation
   const gif_animation_debug = false;
@@ -73,7 +103,7 @@ function App() {
   const theme = getThemeStyles();
 
   // Handle initial loading animation
-  useEffect(() => {
+useEffect(() => {
     const timer = setTimeout(() => {
       setShowMainApp(true);
       // Give fade transition some time before hiding loading screen
@@ -84,6 +114,114 @@ function App() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
+          callback: handleGoogleResponse
+        });
+
+        // Try to render button with retry logic
+        const renderButton = () => {
+          const mainButton = document.getElementById('google-sign-in-main');
+          if (mainButton) {
+            window.google.accounts.id.renderButton(
+              mainButton,
+              { theme: 'outline', size: 'large' }
+            );
+          } else {
+            // Retry after a short delay if element not found
+            setTimeout(renderButton, 100);
+          }
+        };
+        
+        // Start rendering after loading screen completes
+        setTimeout(renderButton, 8000);
+      } catch (error) {
+        console.error('Google Sign-In initialization error:', error);
+      }
+    };
+
+    if (window.google) {
+      initializeGoogleSignIn();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.onload = initializeGoogleSignIn;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  // Check for existing access token on mount
+  useEffect(() => {
+    if (accessToken) {
+      fetchUserData();
+    }
+  }, []);
+
+  const handleGoogleResponse = async (response: any) => {
+    try {
+      console.log('Google response received:', response.credential ? 'Token received' : 'No token');
+      const res = await axios.post('/api/auth/google', {
+        token: response.credential
+      });
+      console.log('Backend auth response:', res.data);
+      const { access_token } = res.data;
+      localStorage.setItem('access_token', access_token);
+      setAccessToken(access_token);
+      await fetchUserData();
+    } catch (error: any) {
+      console.error('Sign-in error:', error);
+      alert('Sign-in failed: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const fetchUserData = async () => {
+    try {
+      console.log('Fetching user data with token:', accessToken ? 'Token exists' : 'No token');
+      const res = await axios.get('/api/user', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      console.log('User data received:', res.data);
+      setUser(res.data);
+      loadSavedRecipes();
+    } catch (error: any) {
+      console.error('Error fetching user data:', error);
+      console.error('Error details:', error.response?.data);
+    }
+  };
+
+  const loadSavedRecipes = async () => {
+    try {
+      const res = await axios.get('/api/saved-recipes', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      setSavedRecipes(res.data);
+    } catch (error) {
+      console.error('Error loading saved recipes:', error);
+    }
+  };
+
+  const handleSaveRecipe = async () => {
+    if (!recipe) return;
+    try {
+      await axios.post('/api/save-recipe', recipe, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      loadSavedRecipes();
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,6 +364,7 @@ function App() {
               </p>
             </div>
 
+
         {/* Debug Section - Test Recipe Links */}
         <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
           <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
@@ -256,6 +395,38 @@ function App() {
             </button>
           </div>
         </div>
+
+        {/* Recent Recipes Section */}
+        {user && savedRecipes.length > 0 && (
+          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🕒 Recent Recipes (Last 33)</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              {savedRecipes.map((savedRecipe) => (
+                <button
+                  key={savedRecipe.id}
+                  onClick={() => {
+                    setRecipe({
+                      title: savedRecipe.title,
+                      url: savedRecipe.url,
+                      ingredients: savedRecipe.ingredients,
+                      ratios: savedRecipe.ratios,
+                      success: true
+                    });
+                    setUrl(savedRecipe.url);
+                  }}
+                  className="p-3 rounded-lg text-left transition-all"
+                  style={{
+                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                    color: theme.textColor,
+                    border: `1px solid ${theme.tableBorder}`
+                  }}
+                >
+                  📋 {savedRecipe.title.length > 30 ? savedRecipe.title.substring(0, 30) + '...' : savedRecipe.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* URL Input Form - Only show when no recipe */}
         {!recipe && (
@@ -427,15 +598,84 @@ function App() {
           >
             ratio.ai
           </h1>
-          <p className="text-lg sm:text-xl text-gray-300 px-4">
-            Transform bloated recipes into clean, memorable ratios
+          <p className="text-lg sm:text-xl px-4 mb-4" style={{color: isDarkMode ? '#d1d5db' : '#6b7280'}}>
+            Distilling recipes webpages into essential ingredients and foundational ratios.
+          </p>
+          <p className="text-xs sm:text-sm px-4 max-w-3xl mx-auto leading-relaxed" style={{color: isDarkMode ? '#9ca3af' : '#6b7280'}}>
+            Hoping to make recipes easy to remember so you don't have to keep going back to websites or YouTube — just pop by here instead. With thousands of recipes scattered across the internet, keep yours collected and shareable in one place, with a direct link to the original — kind of like Goodreads, but for cooking.
           </p>
         </div>
+
+        {/* Login/User Section */}
+        <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+          {user ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {user.picture && (
+                  <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
+                )}
+                <div>
+                  <h3 className="font-semibold" style={{ color: theme.textColor }}>Welcome, {user.name}!</h3>
+                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>{user.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('access_token');
+                  setAccessToken(null);
+                  setUser(null);
+                  setSavedRecipes([]);
+                }}
+                className="px-4 py-2 rounded-lg font-semibold transition-all"
+                style={{ backgroundColor: theme.buttonBg, color: theme.buttonText }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>Sign in to save your recipes</h3>
+              <div id="google-sign-in-main" className="flex justify-center"></div>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Recipes Section */}
+        {user && savedRecipes.length > 0 && (
+          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🕒 Recent Recipes (Last 33)</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              {savedRecipes.map((savedRecipe) => (
+                <button
+                  key={savedRecipe.id}
+                  onClick={() => {
+                    setRecipe({
+                      title: savedRecipe.title,
+                      url: savedRecipe.url,
+                      ingredients: savedRecipe.ingredients,
+                      ratios: savedRecipe.ratios,
+                      success: true
+                    });
+                    setUrl(savedRecipe.url);
+                  }}
+                  className="p-3 rounded-lg text-left transition-all"
+                  style={{
+                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                    color: theme.textColor,
+                    border: `1px solid ${theme.tableBorder}`
+                  }}
+                >
+                  📋 {savedRecipe.title.length > 30 ? savedRecipe.title.substring(0, 30) + '...' : savedRecipe.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Debug Section - Test Recipe Links */}
         <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
           <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
             <button
               onClick={() => setUrl('https://www.recipetineats.com/corn-ribs/')}
               className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
@@ -460,6 +700,17 @@ function App() {
             >
               🍪 Chocolate Chip Cookies
             </button>
+            <div
+              onClick={() => {
+                localStorage.removeItem('access_token');
+                setAccessToken(null);
+                setUser(null);
+                setSavedRecipes([]);
+              }}
+              className="p-3 bg-red-700 hover:bg-red-600 text-red-200 rounded-lg text-center transition-colors border border-red-600 cursor-pointer"
+            >
+              Logout
+            </div>
           </div>
         </div>
 
