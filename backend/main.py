@@ -107,9 +107,12 @@ class RecipeResponse(BaseModel):
 
 # Root endpoint will be handled by the catch-all route below
 
+class GoogleAuthRequest(BaseModel):
+    token: str
+
 @app.post("/api/auth/google")
-async def google_login(token: str, db: Session = Depends(get_db)):
-    user_info = await verify_google_token(token)
+async def google_login(request: GoogleAuthRequest, db: Session = Depends(get_db)):
+    user_info = await verify_google_token(request.token)
     
     # Check if user already exists
     user = db.query(User).filter(User.google_id == user_info["sub"]).first()
