@@ -1,5 +1,6 @@
 import os
 import httpx
+from typing import Optional
 from fastapi import HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
@@ -94,7 +95,7 @@ def get_current_user(
 def get_current_user_optional(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
-) -> User | None:
+) -> Optional[User]:
     """Get current authenticated user, but return None if not authenticated (optional auth)"""
     try:
         return get_current_user(credentials, db)
