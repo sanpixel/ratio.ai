@@ -36,9 +36,19 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
    - Large, prominent ratio display with category labels
    - Color-coded ingredient categories (green=flour, orange=fat, etc.)
    - Bold highlighting for normalized ingredients
+5. **Flippable Recipe Card**: 🔄 IN PROGRESS
+   - Recipe processing table as a flippable card component
+   - Front side: ingredient table with ratios (current view)
+   - Back side: concise, editable cooking instructions
+   - Flip button to toggle between ingredients and instructions
+   - Print button for physical recipe reference
+   - Card maintains consistent styling and mobile responsiveness
 
 ### Phase 2 (Future)
-1. **Concise Instructions**: Optional very brief cooking steps
+1. **Enhanced Instructions**: Expanded instruction features
+   - Auto-generation of concise steps from original recipe
+   - Smart instruction parsing and simplification
+   - Cooking time and temperature extraction
 2. **Recipe Scaling**: Adjust quantities for different serving sizes
 3. **Shopping List Export**: Generate clean shopping lists
 4. **Recipe Saving**: Save processed recipes for later
@@ -70,7 +80,8 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
 2. User pastes recipe URL into input field
 3. App scrapes and processes the recipe
 4. App displays clean ingredient card with ratios
-5. Optional: User can view concise instructions
+5. User can flip card to view/edit concise instructions
+6. Optional: User can print recipe card for offline use
 
 ## Technical Considerations
 - Web scraping capabilities for recipe sites

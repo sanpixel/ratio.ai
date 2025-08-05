@@ -27,9 +27,50 @@ function App() {
   const [error, setError] = useState('');
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showMainApp, setShowMainApp] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   
   // Debug flag to disable video animation
   const gif_animation_debug = false;
+
+  // Theme toggle function
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  // Theme styles
+  const getThemeStyles = () => {
+    if (isDarkMode) {
+      return {
+        background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
+        textColor: '#f0f0f0',
+        cardBg: '#2a2a2a',
+        cardBorder: '#404040',
+        tableBg: '#2a2a2a',
+        tableHeaderBg: '#333333',
+        tableBorder: '#404040',
+        inputBg: '#333333',
+        inputText: '#f0f0f0',
+        buttonBg: '#4A9EFF',
+        buttonText: '#121212'
+      };
+    } else {
+      return {
+        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+        textColor: '#212529',
+        cardBg: '#ffffff',
+        cardBorder: '#dee2e6',
+        tableBg: '#ffffff',
+        tableHeaderBg: '#f8f9fa',
+        tableBorder: '#dee2e6',
+        inputBg: '#ffffff',
+        inputText: '#212529',
+        buttonBg: '#4A9EFF',
+        buttonText: '#ffffff'
+      };
+    }
+  };
+
+  const theme = getThemeStyles();
 
   // Handle initial loading animation
   useEffect(() => {
@@ -163,7 +204,8 @@ function App() {
         <div 
           className="min-h-screen py-6 sm:py-12 px-4"
           style={{
-            background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)', // Dark gradient
+            background: theme.background,
+            color: theme.textColor,
             opacity: showMainApp ? 1 : 0,
             transition: 'opacity 1s ease-in-out'
           }}
@@ -171,7 +213,14 @@ function App() {
           <div className="max-w-6xl mx-auto">
             {/* Header - Always visible */}
             <div className="text-center mb-8 sm:mb-12">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>ratio.ai</h1>
+              <h1 
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 cursor-pointer transition-all hover:scale-105" 
+                style={{color: theme.buttonBg}}
+                onClick={toggleTheme}
+                title="Click to toggle dark/light mode"
+              >
+                ratio.ai
+              </h1>
               <p className="text-lg sm:text-xl text-gray-300 px-4">
                 Transform bloated recipes into clean, memorable ratios
               </p>
@@ -366,11 +415,18 @@ function App() {
 
   // Normal app rendering after loading is complete
   return (
-    <div className="min-h-screen py-6 sm:py-12 px-4" style={{ background: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)' }}>
+    <div className="min-h-screen py-6 sm:py-12 px-4" style={{ background: theme.background, color: theme.textColor }}>
       <div className="max-w-6xl mx-auto">
         {/* Header - Always visible */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>ratio.ai</h1>
+          <h1 
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 cursor-pointer transition-all hover:scale-105" 
+            style={{color: theme.buttonBg}}
+            onClick={toggleTheme}
+            title="Click to toggle dark/light mode"
+          >
+            ratio.ai
+          </h1>
           <p className="text-lg sm:text-xl text-gray-300 px-4">
             Transform bloated recipes into clean, memorable ratios
           </p>
@@ -441,54 +497,88 @@ function App() {
         )}
 
         {recipe && recipe.success && (
-        <div>
+        <div style={{ 
+          backgroundColor: theme.cardBg, 
+          border: `1px solid ${theme.cardBorder}`, 
+          borderRadius: '12px', 
+          padding: '24px', 
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)' 
+        }}>
           <div style={{ marginBottom: '20px' }}>
-            <h2>{recipe.title}</h2>
-            <a href={recipe.url} target="_blank" rel="noopener noreferrer">
+            <h2 style={{ color: theme.textColor, marginBottom: '8px' }}>{recipe.title}</h2>
+            <a href={recipe.url} target="_blank" rel="noopener noreferrer" style={{ color: theme.buttonBg }}>
               View Original Recipe →
             </a>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px' }}>
+          <table style={{ 
+            width: '100%', 
+            borderCollapse: 'collapse', 
+            marginBottom: '30px',
+            backgroundColor: theme.tableBg,
+            borderRadius: '8px',
+            overflow: 'hidden'
+          }}>
             <thead>
-              <tr>
-                <th style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'left' }}>Quantity</th>
-                <th style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'left' }}>Unit</th>
-                <th style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'left' }}>Grams</th>
-                <th style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'left' }}>Ingredient</th>
-                <th style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'left' }}>Full Debug</th>
+              <tr style={{ backgroundColor: theme.tableHeaderBg }}>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Quantity</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Unit</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Grams</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Ingredient</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Full Debug</th>
               </tr>
             </thead>
             <tbody>
               {recipe.ingredients.map((ingredient, index) => (
-                <tr key={index}>
-                  <td style={{ border: '1px solid #ccc', padding: '4px' }}>
+                <tr key={index} style={{ backgroundColor: index % 2 === 0 ? theme.tableBg : (isDarkMode ? '#2d2d2d' : '#f8f9fa') }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
                     <input
                       type="number"
                       step="0.25"
                       value={ingredient.quantity}
                       onChange={(e) => updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)}
-                      style={{ width: '80px', border: 'none', padding: '4px' }}
+                      style={{ 
+                        width: '80px', 
+                        border: 'none', 
+                        padding: '6px', 
+                        backgroundColor: theme.inputBg,
+                        color: theme.inputText,
+                        borderRadius: '4px'
+                      }}
                     />
                   </td>
-                  <td style={{ border: '1px solid #ccc', padding: '4px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
                     <input
                       type="text"
                       value={ingredient.unit}
                       onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
-                      style={{ width: '80px', border: 'none', padding: '4px' }}
+                      style={{ 
+                        width: '80px', 
+                        border: 'none', 
+                        padding: '6px', 
+                        backgroundColor: theme.inputBg,
+                        color: theme.inputText,
+                        borderRadius: '4px'
+                      }}
                     />
                   </td>
-                  <td style={{ border: '1px solid #ccc', padding: '4px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
                     <input
                       type="number"
                       step="0.1"
                       value={ingredient.grams}
                       onChange={(e) => updateIngredient(index, 'grams', parseFloat(e.target.value) || 0)}
-                      style={{ width: '80px', border: 'none', padding: '4px' }}
+                      style={{ 
+                        width: '80px', 
+                        border: 'none', 
+                        padding: '6px', 
+                        backgroundColor: theme.inputBg,
+                        color: theme.inputText,
+                        borderRadius: '4px'
+                      }}
                     />
                   </td>
-                  <td style={{ border: '1px solid #ccc', padding: '4px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
                     <input
                       type="text"
                       value={ingredient.name}
@@ -496,13 +586,21 @@ function App() {
                       style={{ 
                         width: '100%', 
                         border: 'none', 
-                        padding: '4px',
+                        padding: '6px',
+                        backgroundColor: theme.inputBg,
                         fontWeight: ingredient.was_normalized ? 'bold' : 'normal',
-                        color: getIngredientCategoryColor(ingredient.name)
+                        color: getIngredientCategoryColor(ingredient.name),
+                        borderRadius: '4px'
                       }}
                     />
                   </td>
-                  <td style={{ border: '1px solid #ccc', padding: '4px', fontSize: '12px', color: '#666', maxWidth: '200px' }}>
+                  <td style={{ 
+                    border: `1px solid ${theme.tableBorder}`, 
+                    padding: '8px', 
+                    fontSize: '12px', 
+                    color: isDarkMode ? '#aaa' : '#666', 
+                    maxWidth: '200px' 
+                  }}>
                     {ingredient.original_text}
                   </td>
                 </tr>
@@ -511,11 +609,18 @@ function App() {
           </table>
 
           {recipe.ratios['Main Ratio'] && (
-            <div style={{ marginBottom: '30px', textAlign: 'center' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+            <div style={{ 
+              marginBottom: '30px', 
+              textAlign: 'center',
+              backgroundColor: theme.tableHeaderBg,
+              padding: '20px',
+              borderRadius: '8px',
+              border: `1px solid ${theme.tableBorder}`
+            }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: theme.buttonBg, marginBottom: '10px' }}>
                 {recipe.ratios['Main Ratio'].ratio_string}
               </h2>
-              <p style={{ fontSize: '1rem', color: '#666', marginTop: '10px' }}>
+              <p style={{ fontSize: '1rem', color: theme.textColor, marginTop: '10px' }}>
                 {recipe.ratios['Main Ratio'].categories.map((category: string, index: number) => (
                   <span key={index}>
                     {recipe.ratios['Main Ratio'].ratio[index]} {category}
@@ -526,26 +631,55 @@ function App() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc' }}>
+          <form onSubmit={handleSubmit} style={{ 
+            marginTop: '30px', 
+            paddingTop: '20px', 
+            borderTop: `1px solid ${theme.tableBorder}`,
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center'
+          }}>
             <input
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="Paste another recipe URL here..."
-              style={{ width: '400px', padding: '8px', marginRight: '10px' }}
+              style={{ 
+                flex: 1,
+                padding: '12px', 
+                backgroundColor: theme.inputBg,
+                color: theme.inputText,
+                border: `1px solid ${theme.tableBorder}`,
+                borderRadius: '6px'
+              }}
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading}
-              style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}
+              style={{ 
+                padding: '12px 20px', 
+                backgroundColor: theme.buttonBg, 
+                color: theme.buttonText, 
+                border: 'none', 
+                cursor: 'pointer',
+                borderRadius: '6px',
+                fontWeight: '600'
+              }}
             >
               {loading ? 'Processing...' : 'Extract Ratios'}
             </button>
           </form>
           
           {error && (
-            <div style={{ color: 'red', marginTop: '10px' }}>
+            <div style={{ 
+              color: '#ef4444', 
+              marginTop: '15px',
+              padding: '12px',
+              backgroundColor: isDarkMode ? '#fef2f2' : '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '6px'
+            }}>
               {error}
             </div>
           )}
