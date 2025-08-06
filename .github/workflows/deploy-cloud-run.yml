@@ -48,6 +48,8 @@ jobs:
         service: ${{ env.SERVICE }}
         region: ${{ env.REGION }}
         image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ratio-ai/${{ env.SERVICE }}:${{ github.sha }}
+        env_vars: |
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
         labels: |
           managed-by=github-actions
           commit-sha=${{ github.sha }}
