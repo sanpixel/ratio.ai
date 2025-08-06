@@ -120,31 +120,48 @@ async def google_login(request: GoogleAuthRequest, db: Session = Depends(get_db)
 
 @app.post("/api/save-recipe")
 async def save_recipe(
-    recipe: RecipeResponse,
+    recipe: Dict[str, Any],
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Save a processed recipe for the authenticated user"""
-    # Convert ingredients to plain dicts if they're Pydantic models, otherwise use as-is
-    ingredients_data = []
-    for ingredient in recipe.ingredients:
-        if hasattr(ingredient, 'dict'):
-            # It's a Pydantic model
-            ingredients_data.append(ingredient.dict())
-        else:
-            # It's already a plain dict
-            ingredients_data.append(ingredient)
-    
-    saved_recipe = SavedRecipe(
-        user_id=user.id,
-        title=recipe.title,
-        url=recipe.url,
-        ingredients=ingredients_data,
-        ratios=recipe.ratios
-    )
-    db.add(saved_recipe)
-    db.commit()
-    return {"message": "Recipe saved successfully"}
+    try:
+        logger.info(f"Attempting to save recipe: {recipe.get('title', 'Unknown')} for user: {user.email}")
+        logger.info(f"Recipe data keys: {list(recipe.keys())}")
+        logger.info(f"Recipe success: {recipe.get('success')}, ingredients_count: {len(recipe.get('ingredients', []))}")
+        
+        # Extract data from the dict
+        title = recipe.get('title', '')
+        url = recipe.get('url', '')
+        ingredients = recipe.get('ingredients', [])
+        ratios = recipe.get('ratios', {})
+        
+        # Convert ingredients to plain dicts if they're objects
+        ingredients_data = []
+        for ingredient in ingredients:
+            if hasattr(ingredient, 'dict'):
+                # It's a Pydantic model
+                ingredients_data.append(ingredient.dict())
+            else:
+                # It's already a plain dict/object
+                ingredients_data.append(ingredient)
+        
+        saved_recipe = SavedRecipe(
+            user_id=user.id,
+            title=title,
+            url=url,
+            ingredients=ingredients_data,
+            ratios=ratios
+        )
+        db.add(saved_recipe)
+        db.commit()
+        logger.info(f"Recipe saved successfully with ID: {saved_recipe.id}")
+        return {"message": "Recipe saved successfully"}
+        
+    except Exception as e:
+        logger.error(f"Error saving recipe: {str(e)}")
+        logger.error(f"Recipe data that failed: {recipe}")
+        raise HTTPException(status_code=500, detail=f"Failed to save recipe: {str(e)}")
 
 @app.get("/api/user")
 async def get_user(user: User = Depends(get_current_user)):
