@@ -143,7 +143,7 @@ useEffect(() => {
         });
 
         // Initial render after loading screen completes
-        setTimeout(renderGoogleSignInButton, 8000);
+        setTimeout(renderGoogleSignInButton, 7000);
       } catch (error) {
         console.error('Google Sign-In initialization error:', error);
       }
@@ -369,6 +369,9 @@ useEffect(() => {
             autoPlay
             muted
             loop
+            playsInline
+            controls={false}
+            preload="auto"
             className="max-w-full max-h-full object-contain"
           />
         </div>
@@ -803,64 +806,64 @@ useEffect(() => {
           }}>
             <thead>
               <tr style={{ backgroundColor: theme.tableHeaderBg }}>
-                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Quantity</th>
-                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Unit</th>
-                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Grams</th>
-                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Ingredient</th>
-                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px', textAlign: 'left', color: theme.textColor, fontWeight: '600' }}>Full Debug</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px', textAlign: 'left', color: theme.textColor, fontWeight: '600', fontSize: '14px' }}>Qty</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px', textAlign: 'left', color: theme.textColor, fontWeight: '600', fontSize: '14px' }}>Unit</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px', textAlign: 'left', color: theme.textColor, fontWeight: '600', fontSize: '14px' }}>Grams</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px', textAlign: 'left', color: theme.textColor, fontWeight: '600', fontSize: '14px' }}>Ingredient</th>
+                <th style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px', textAlign: 'left', color: theme.textColor, fontWeight: '600', fontSize: '14px' }}>Debug</th>
               </tr>
             </thead>
             <tbody>
               {recipe.ingredients.map((ingredient, index) => (
                 <tr key={index} style={{ backgroundColor: 'transparent' }}>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px' }}>
                     <input
                       type="number"
                       step="0.25"
                       value={ingredient.quantity}
                       onChange={(e) => updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)}
                       style={{ 
-                        width: '70px', 
+                        width: '60px', 
                         border: 'none', 
-                        padding: '8px', 
+                        padding: '2px', 
                         backgroundColor: 'transparent',
                         color: theme.textColor,
-                        fontSize: '16px'
+                        fontSize: '14px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px' }}>
                     <input
                       type="text"
                       value={ingredient.unit}
                       onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
                       style={{ 
-                        width: '70px', 
+                        width: '60px', 
                         border: 'none', 
-                        padding: '8px', 
+                        padding: '2px', 
                         backgroundColor: 'transparent',
                         color: theme.textColor,
-                        fontSize: '16px'
+                        fontSize: '14px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px' }}>
                     <input
                       type="number"
                       step="0.1"
                       value={ingredient.grams}
                       onChange={(e) => updateIngredient(index, 'grams', parseFloat(e.target.value) || 0)}
                       style={{ 
-                        width: '70px', 
+                        width: '60px', 
                         border: 'none', 
-                        padding: '8px', 
+                        padding: '2px', 
                         backgroundColor: 'transparent',
                         color: theme.textColor,
-                        fontSize: '16px'
+                        fontSize: '14px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '1px' }}>
                     <input
                       type="text"
                       value={ingredient.name}
@@ -868,23 +871,23 @@ useEffect(() => {
                       style={{ 
                         width: '100%', 
                         border: 'none', 
-                        padding: '8px',
+                        padding: '2px',
                         backgroundColor: 'transparent',
                         fontWeight: ingredient.was_normalized ? 'bold' : 'normal',
                         color: getIngredientCategoryColor(ingredient.name),
-                        fontSize: '16px'
+                        fontSize: '14px'
                       }}
                     />
                   </td>
                   <td style={{ 
                     border: `1px solid ${theme.tableBorder}`, 
-                    padding: '12px', 
-                    fontSize: '14px', 
+                    padding: '1px', 
+                    fontSize: '12px', 
                     color: isDarkMode ? '#888' : '#555', 
-                    maxWidth: '200px',
+                    maxWidth: '150px',
                     fontFamily: 'monospace'
                   }}>
-                    {ingredient.original_text}
+                    <div style={{ padding: '2px' }}>{ingredient.original_text}</div>
                   </td>
                 </tr>
               ))}
