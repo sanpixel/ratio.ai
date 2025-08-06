@@ -263,6 +263,22 @@ useEffect(() => {
       
       if (!response.data.success) {
         setError(response.data.error || 'Failed to process recipe');
+      } else {
+        // Auto-save recipe for logged-in users
+        if (user && accessToken) {
+          try {
+            await axios.post('/api/save-recipe', response.data, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`
+              }
+            });
+            // Refresh saved recipes list
+            loadSavedRecipes();
+          } catch (saveError) {
+            console.error('Error auto-saving recipe:', saveError);
+            // Don't show error to user - recipe still displays fine
+          }
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Error processing recipe');
