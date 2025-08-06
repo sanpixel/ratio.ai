@@ -1,26 +1,60 @@
-# ratio.ai Updates - August 3, 2025
+# ratio.ai Updates - August 6, 2025
 
 ## Development Session Summary
-**Warp Credits Used: 685/2500 this month**
+**Latest Session: Phase 2 OAuth Integration Complete**
 
-## Major Updates Made Today
+## Major Updates Made Recently
 
-### 1. Mobile Device Access Configuration
+### 1. Phase 2 OAuth Integration - COMPLETE ✅
+- **Google OAuth Authentication**: Full user sign-in/sign-out functionality
+  - Integration with Google OAuth 2.0 API
+  - Persistent user sessions across browser reloads and deployments
+  - Clean authentication UI with user profile display
+
+- **PostgreSQL Database Integration**: Supabase-hosted database
+  - User data persistence with secure connection strings
+  - Recipe storage linked to user accounts
+  - Session management and authentication tokens
+
+- **Automatic Recipe Saving**: Seamless recipe persistence
+  - All processed recipes automatically saved for logged-in users
+  - No manual save action required
+  - Background API calls with error handling
+
+- **Recent Recipes Display**: User-specific recipe history
+  - Shows last 33 processed recipes per user
+  - Quick-access buttons for one-click recipe reprocessing
+  - Replaces debug test buttons with personalized content
+
+### 2. Enhanced UI/UX Features
+- **Dark/Light Theme Toggle**: Click "ratio.ai" header to switch themes
+  - Persistent theme preference in localStorage
+  - Consistent styling across all components
+  - Sky blue accent color maintained in both themes
+
+- **Mobile-Responsive Design**: Improved cross-device experience
+  - Responsive layout for phones and tablets
+  - Touch-friendly interactive elements
+  - Consistent user experience across platforms
+
+### 3. Cloud Deployment Infrastructure
+- **Google Cloud Run**: Single-service deployment
+  - Combined frontend and backend in one container
+  - Automatic scaling and high availability
+  - HTTPS-enabled public access
+
+- **CI/CD Pipeline**: GitHub Actions automation
+  - Automatic builds on push to main/dev branches
+  - Container image builds and deployments
+  - Environment variable injection for secrets
+
+### 4. Mobile Device Access Configuration
 - **Problem**: App was accessible from PC but not from mobile devices on same network
 - **Root Cause**: Frontend hardcoded to use `localhost:8000` for API calls
 - **Solution**: 
   - Updated frontend API calls to use computer's IP address (`192.168.86.51:8000`)
   - Created `.env` file with `HOST=0.0.0.0` to ensure React dev server binds to all network interfaces
   - Added Windows Firewall rules for ports 3000 (frontend) and 8000 (backend)
-
-### 2. UI/UX Improvements
-- **Loading Screen**: Changed background from white to black for better visual experience
-- **Main App Background**: Updated to sky blue (`#87CEEB`) for improved aesthetics
-- **Video Animation**: Maintained 7-second loading video with proper fade transitions
-
-### 3. Network Configuration Files Added
-- `frontend/.env`: Contains `HOST=0.0.0.0` for proper network binding
-- Backend already configured to bind to `0.0.0.0:8000` via `uvicorn.run(app, host="0.0.0.0", port=8000)`
 
 ## Technical Changes Made
 
@@ -39,15 +73,32 @@ const response = await axios.post('http://192.168.86.51:8000/process-recipe', {
 
 ## Current Project Status
 
-### Working Features
+### Phase 1 Features (Complete) ✅
 ✅ Recipe URL processing and ingredient extraction  
 ✅ Ratio calculations with color-coded categories  
 ✅ Ingredient editing with real-time ratio updates  
-✅ Mobile device access from same network  
 ✅ Loading screen with video animation  
-✅ Debug test recipe buttons  
+✅ Mobile device access from same network  
+✅ Error handling and loading states
 
-### Network Architecture
+### Phase 2 Features (Complete) ✅
+✅ Google OAuth user authentication  
+✅ PostgreSQL database integration (Supabase)  
+✅ Automatic recipe saving for logged-in users  
+✅ Recent recipes display (last 33 per user)  
+✅ Dark/light theme toggle  
+✅ Mobile-responsive design  
+✅ Google Cloud Run deployment  
+✅ CI/CD pipeline with GitHub Actions  
+✅ Session persistence across deployments
+
+### Live Deployment
+- **Production URL**: Available on Google Cloud Run
+- **Database**: Supabase PostgreSQL with secure connections
+- **Authentication**: Google OAuth 2.0 integration
+- **Auto-scaling**: Handles traffic spikes automatically
+
+### Local Development Architecture
 - **Frontend**: React dev server on `0.0.0.0:3000`
 - **Backend**: FastAPI server on `0.0.0.0:8000`
 - **Mobile Access**: Available at `http://192.168.86.51:3000`

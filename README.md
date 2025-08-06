@@ -113,9 +113,21 @@ The frontend will be running at `http://localhost:3000`
 - ✅ Error handling and loading states
 - ✅ Test script for verifying functionality
 
+✅ **Phase 2 - COMPLETE:**
+- ✅ Google OAuth integration for user authentication
+- ✅ PostgreSQL database (Supabase) for persistent data storage
+- ✅ Automatic recipe saving for logged-in users
+- ✅ Recent recipes section showing last 33 processed recipes
+- ✅ Session persistence across deployments
+- ✅ Dark/light theme toggle
+- ✅ Mobile-responsive design
+- ✅ Cloud Run deployment with CI/CD pipeline
+
 🎯 **Ready to Test:**
 - Full end-to-end pipeline: URL → Scrape → Parse → Calculate → Display
 - Real-time ingredient editing with ratio updates
+- User authentication and recipe persistence
+- Cross-device session management
 - Support for our 4 test recipe URLs
 
 ## Testing
