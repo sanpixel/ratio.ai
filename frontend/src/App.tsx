@@ -313,8 +313,8 @@ useEffect(() => {
       return '#FF69B4'; // HotPink
     }
     
-    // Default - no color for seasonings, mix-ins, etc.
-    return '#000000'; // Black
+    // Default - dark red for seasonings, mix-ins, etc.
+    return '#8B0000'; // DarkRed
   };
 
   const updateIngredient = async (index: number, field: keyof Ingredient, value: string | number) => {
@@ -775,13 +775,22 @@ useEffect(() => {
         <div style={{ 
           backgroundColor: theme.cardBg, 
           border: `1px solid ${theme.cardBorder}`, 
-          borderRadius: '12px', 
-          padding: '24px', 
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)' 
+          padding: '32px',
+          marginTop: '24px'
         }}>
-          <div style={{ marginBottom: '20px' }}>
-            <h2 style={{ color: theme.textColor, marginBottom: '8px' }}>{recipe.title}</h2>
-            <a href={recipe.url} target="_blank" rel="noopener noreferrer" style={{ color: theme.buttonBg }}>
+          <div style={{ marginBottom: '32px' }}>
+            <h2 style={{ 
+              color: theme.textColor, 
+              marginBottom: '12px', 
+              fontSize: '28px', 
+              fontWeight: '700',
+              letterSpacing: '-0.02em'
+            }}>{recipe.title}</h2>
+            <a href={recipe.url} target="_blank" rel="noopener noreferrer" style={{ 
+              color: theme.buttonBg, 
+              textDecoration: 'none',
+              fontSize: '16px'
+            }}>
               View Original Recipe →
             </a>
           </div>
@@ -789,10 +798,8 @@ useEffect(() => {
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
-            marginBottom: '30px',
-            backgroundColor: theme.tableBg,
-            borderRadius: '8px',
-            overflow: 'hidden'
+            marginBottom: '40px',
+            backgroundColor: 'transparent'
           }}>
             <thead>
               <tr style={{ backgroundColor: theme.tableHeaderBg }}>
@@ -805,55 +812,55 @@ useEffect(() => {
             </thead>
             <tbody>
               {recipe.ingredients.map((ingredient, index) => (
-                <tr key={index} style={{ backgroundColor: index % 2 === 0 ? theme.tableBg : (isDarkMode ? '#2d2d2d' : '#f8f9fa') }}>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
+                <tr key={index} style={{ backgroundColor: 'transparent' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
                     <input
                       type="number"
                       step="0.25"
                       value={ingredient.quantity}
                       onChange={(e) => updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)}
                       style={{ 
-                        width: '80px', 
+                        width: '70px', 
                         border: 'none', 
-                        padding: '6px', 
-                        backgroundColor: theme.inputBg,
-                        color: theme.inputText,
-                        borderRadius: '4px'
+                        padding: '8px', 
+                        backgroundColor: 'transparent',
+                        color: theme.textColor,
+                        fontSize: '16px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
                     <input
                       type="text"
                       value={ingredient.unit}
                       onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
                       style={{ 
-                        width: '80px', 
+                        width: '70px', 
                         border: 'none', 
-                        padding: '6px', 
-                        backgroundColor: theme.inputBg,
-                        color: theme.inputText,
-                        borderRadius: '4px'
+                        padding: '8px', 
+                        backgroundColor: 'transparent',
+                        color: theme.textColor,
+                        fontSize: '16px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
                     <input
                       type="number"
                       step="0.1"
                       value={ingredient.grams}
                       onChange={(e) => updateIngredient(index, 'grams', parseFloat(e.target.value) || 0)}
                       style={{ 
-                        width: '80px', 
+                        width: '70px', 
                         border: 'none', 
-                        padding: '6px', 
-                        backgroundColor: theme.inputBg,
-                        color: theme.inputText,
-                        borderRadius: '4px'
+                        padding: '8px', 
+                        backgroundColor: 'transparent',
+                        color: theme.textColor,
+                        fontSize: '16px'
                       }}
                     />
                   </td>
-                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '8px' }}>
+                  <td style={{ border: `1px solid ${theme.tableBorder}`, padding: '12px' }}>
                     <input
                       type="text"
                       value={ingredient.name}
@@ -861,20 +868,21 @@ useEffect(() => {
                       style={{ 
                         width: '100%', 
                         border: 'none', 
-                        padding: '6px',
-                        backgroundColor: theme.inputBg,
+                        padding: '8px',
+                        backgroundColor: 'transparent',
                         fontWeight: ingredient.was_normalized ? 'bold' : 'normal',
                         color: getIngredientCategoryColor(ingredient.name),
-                        borderRadius: '4px'
+                        fontSize: '16px'
                       }}
                     />
                   </td>
                   <td style={{ 
                     border: `1px solid ${theme.tableBorder}`, 
-                    padding: '8px', 
-                    fontSize: '12px', 
-                    color: isDarkMode ? '#aaa' : '#666', 
-                    maxWidth: '200px' 
+                    padding: '12px', 
+                    fontSize: '14px', 
+                    color: isDarkMode ? '#888' : '#555', 
+                    maxWidth: '200px',
+                    fontFamily: 'monospace'
                   }}>
                     {ingredient.original_text}
                   </td>
@@ -885,17 +893,28 @@ useEffect(() => {
 
           {recipe.ratios['Main Ratio'] && (
             <div style={{ 
-              marginBottom: '30px', 
+              marginBottom: '40px', 
+              marginTop: '40px',
               textAlign: 'center',
-              backgroundColor: theme.tableHeaderBg,
-              padding: '20px',
-              borderRadius: '8px',
-              border: `1px solid ${theme.tableBorder}`
+              borderTop: `2px solid ${theme.tableBorder}`,
+              borderBottom: `2px solid ${theme.tableBorder}`,
+              padding: '32px 0'
             }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: theme.buttonBg, marginBottom: '10px' }}>
+              <h2 style={{ 
+                fontSize: '3rem', 
+                fontWeight: '800', 
+                color: theme.buttonBg, 
+                marginBottom: '16px',
+                letterSpacing: '0.05em'
+              }}>
                 {recipe.ratios['Main Ratio'].ratio_string}
               </h2>
-              <p style={{ fontSize: '1rem', color: theme.textColor, marginTop: '10px' }}>
+              <p style={{ 
+                fontSize: '18px', 
+                color: theme.textColor, 
+                fontWeight: '500',
+                letterSpacing: '0.02em'
+              }}>
                 {recipe.ratios['Main Ratio'].categories.map((category: string, index: number) => (
                   <span key={index}>
                     {recipe.ratios['Main Ratio'].ratio[index]} {category}
