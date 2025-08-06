@@ -115,6 +115,21 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Function to render Google Sign-In button
+  const renderGoogleSignInButton = () => {
+    if (!window.google) return;
+    
+    const mainButton = document.getElementById('google-sign-in-main');
+    if (mainButton) {
+      // Clear any existing content
+      mainButton.innerHTML = '';
+      window.google.accounts.id.renderButton(
+        mainButton,
+        { theme: 'outline', size: 'large' }
+      );
+    }
+  };
+
   useEffect(() => {
     const initializeGoogleSignIn = () => {
       try {
@@ -127,22 +142,8 @@ useEffect(() => {
           callback: handleGoogleResponse
         });
 
-        // Try to render button with retry logic
-        const renderButton = () => {
-          const mainButton = document.getElementById('google-sign-in-main');
-          if (mainButton) {
-            window.google.accounts.id.renderButton(
-              mainButton,
-              { theme: 'outline', size: 'large' }
-            );
-          } else {
-            // Retry after a short delay if element not found
-            setTimeout(renderButton, 100);
-          }
-        };
-        
-        // Start rendering after loading screen completes
-        setTimeout(renderButton, 8000);
+        // Initial render after loading screen completes
+        setTimeout(renderGoogleSignInButton, 8000);
       } catch (error) {
         console.error('Google Sign-In initialization error:', error);
       }
@@ -158,6 +159,14 @@ useEffect(() => {
       document.body.appendChild(script);
     }
   }, []);
+
+  // Re-render Google Sign-In button when user logs out
+  useEffect(() => {
+    if (!user && window.google && !isInitialLoading) {
+      // Small delay to ensure DOM is ready
+      setTimeout(renderGoogleSignInButton, 100);
+    }
+  }, [user, isInitialLoading]);
 
   // Check for existing access token on mount
   useEffect(() => {
@@ -710,17 +719,6 @@ useEffect(() => {
             >
               🍪 Chocolate Chip Cookies
             </button>
-            <div
-              onClick={() => {
-                localStorage.removeItem('access_token');
-                setAccessToken(null);
-                setUser(null);
-                setSavedRecipes([]);
-              }}
-              className="p-3 bg-red-700 hover:bg-red-600 text-red-200 rounded-lg text-center transition-colors border border-red-600 cursor-pointer"
-            >
-              Logout
-            </div>
           </div>
         </div>
 
