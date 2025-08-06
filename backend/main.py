@@ -125,11 +125,21 @@ async def save_recipe(
     db: Session = Depends(get_db)
 ):
     """Save a processed recipe for the authenticated user"""
+    # Convert ingredients to plain dicts if they're Pydantic models, otherwise use as-is
+    ingredients_data = []
+    for ingredient in recipe.ingredients:
+        if hasattr(ingredient, 'dict'):
+            # It's a Pydantic model
+            ingredients_data.append(ingredient.dict())
+        else:
+            # It's already a plain dict
+            ingredients_data.append(ingredient)
+    
     saved_recipe = SavedRecipe(
         user_id=user.id,
         title=recipe.title,
         url=recipe.url,
-        ingredients=[ingredient.dict() for ingredient in recipe.ingredients],
+        ingredients=ingredients_data,
         ratios=recipe.ratios
     )
     db.add(saved_recipe)
