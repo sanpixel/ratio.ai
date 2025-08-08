@@ -135,14 +135,18 @@ useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const recipeParam = urlParams.get('recipe');
     
-    if (recipeParam) {
-      // Skip loading animation for extension requests
+    // Skip loading animation for specific pages
+    const currentPath = window.location.pathname;
+    const skipLoadingPaths = ['/privacy-policy.html', '/privacy-policy'];
+    
+    if (recipeParam || skipLoadingPaths.some(path => currentPath.includes(path))) {
+      // Skip loading animation for extension requests and static pages
       setIsInitialLoading(false);
       setShowMainApp(true);
       return;
     }
     
-    // Normal loading animation for regular visits
+    // Normal loading animation for regular visits to main site
     const timer = setTimeout(() => {
       setShowMainApp(true);
       // Give fade transition some time before hiding loading screen
@@ -1078,6 +1082,34 @@ useEffect(() => {
           )}
         </div>
         )}
+        
+        {/* Footer */}
+        <div className="mt-16 pt-8 border-t" style={{ borderColor: theme.tableBorder }}>
+          <div className="text-center text-sm" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
+            <p className="mb-2">
+              <a 
+                href="/privacy-policy.html" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:underline"
+                style={{ color: theme.buttonBg }}
+              >
+                Privacy Policy
+              </a>
+              {" | "}
+              <a 
+                href="https://github.com/sanpixel/ratio.ai" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:underline"
+                style={{ color: theme.buttonBg }}
+              >
+                GitHub
+              </a>
+            </p>
+            <p>&copy; 2025 ratio.ai - Making recipes memorable</p>
+          </div>
+        </div>
       </div>
     </div>
   );
