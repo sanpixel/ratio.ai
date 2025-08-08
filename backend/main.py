@@ -16,6 +16,7 @@ from ratios import RatioCalculator
 from database import get_db, create_tables
 from models import User, SavedRecipe
 from auth import verify_google_token, create_access_token, get_current_user
+from unique_names_generator import generate
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -175,8 +176,29 @@ async def get_user(user: User = Depends(get_current_user)):
 
 @app.get("/api/saved-recipes")
 async def get_saved_recipes(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Get all saved recipes for the authenticated user"""
-    return db.query(SavedRecipe).filter(SavedRecipe.user_id == user.id).all()
+    """Get global recent recipes from all users (limited to 12) with privacy-safe user info"""
+    # Get 12 most recent recipes from all users with user data, ordered by creation date
+    recipes_with_users = db.query(SavedRecipe, User).join(User, SavedRecipe.user_id == User.id).order_by(SavedRecipe.created_at.desc()).limit(12).all()
+    
+    # Format response with animal handle generated on backend (email stays private)
+    result = []
+    for recipe, recipe_user in recipes_with_users:
+        # Generate animal handle on backend using email as seed - email never leaves server
+        animal_handle = generate(separator='', seed=recipe_user.email, style='capital')
+        
+        recipe_dict = {
+            "id": recipe.id,
+            "title": recipe.title,
+            "url": recipe.url,
+            "ingredients": recipe.ingredients,
+            "ratios": recipe.ratios,
+            "created_at": recipe.created_at,
+            "user_handle": animal_handle,  # Send generated handle instead of email
+            "user_picture": recipe_user.picture
+        }
+        result.append(recipe_dict)
+    
+    return result
 
 @app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):
