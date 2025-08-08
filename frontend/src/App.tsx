@@ -63,7 +63,7 @@ function App() {
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipe[]>([]);
   
   // Debug flag to disable GIF animation
-  const gif_animation_debug = false;
+  const gif_animation_debug = true;
 
   // Theme toggle function
   const toggleTheme = () => {
