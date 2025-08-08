@@ -336,12 +336,15 @@ async function saveRecentRecipe(recipeData) {
 // Open recipe results in new tab
 async function openRecipeInNewTab(recipeData) {
   try {
-    // Create a new tab with ratio.ai and pass the recipe data
-    const ratioAiUrl = `${API_BASE}?recipe=${encodeURIComponent(JSON.stringify({
+    // Create a new tab with ratio.ai frontend and pass the recipe data
+    const frontendUrl = API_BASE; // Frontend and backend are served from the same URL
+    const ratioAiUrl = `${frontendUrl}?recipe=${encodeURIComponent(JSON.stringify({
       title: recipeData.title,
-      url: recipeData.url
+      url: recipeData.url,
+      fromExtension: true
     }))}`;
     
+    console.log('Opening recipe in new tab:', ratioAiUrl);
     await chrome.tabs.create({ url: ratioAiUrl });
     
   } catch (error) {

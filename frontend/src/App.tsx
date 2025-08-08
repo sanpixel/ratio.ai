@@ -62,7 +62,7 @@ function App() {
   });
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipe[]>([]);
   
-  // Debug flag to disable video animation
+  // Debug flag to disable GIF animation
   const gif_animation_debug = false;
 
   // Theme toggle function
@@ -149,7 +149,7 @@ useEffect(() => {
       setTimeout(() => {
         setIsInitialLoading(false);
       }, 1000); // 1 second fade transition
-    }, 7000); // Show video for 7 seconds
+    }, 7000); // Show GIF animation for 7 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -451,14 +451,9 @@ useEffect(() => {
             transition: 'opacity 1s ease-in-out'
           }}
         >
-          <video 
-            src="/loading-video.mp4" 
-            autoPlay
-            muted
-            loop
-            playsInline
-            controls={false}
-            preload="auto"
+          <img 
+            src="/loading-animation.gif" 
+            alt="Loading..."
             className="max-w-full max-h-full object-contain"
           />
         </div>
