@@ -356,6 +356,16 @@ async def recalculate_ratios(request: RecalculateRequest):
 async def health_check():
     return {"status": "healthy"}
 
+# Serve privacy policy as static HTML file
+if static_dir.exists():
+    @app.get("/privacy-policy.html")
+    async def serve_privacy_policy():
+        privacy_policy_file = static_dir / "privacy-policy.html"
+        if privacy_policy_file.exists():
+            return FileResponse(str(privacy_policy_file), media_type="text/html")
+        else:
+            return {"error": "Privacy policy not found"}
+
 # Serve React app for root and all non-API routes (MUST be last!)
 if static_dir.exists():
     @app.get("/{full_path:path}")
