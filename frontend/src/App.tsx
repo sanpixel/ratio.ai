@@ -131,6 +131,18 @@ function App() {
 
   // Handle initial loading animation
 useEffect(() => {
+    // Check for extension recipe first
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeParam = urlParams.get('recipe');
+    
+    if (recipeParam) {
+      // Skip loading animation for extension requests
+      setIsInitialLoading(false);
+      setShowMainApp(true);
+      return;
+    }
+    
+    // Normal loading animation for regular visits
     const timer = setTimeout(() => {
       setShowMainApp(true);
       // Give fade transition some time before hiding loading screen
@@ -323,19 +335,24 @@ useEffect(() => {
         setError(response.data.error || 'Failed to process recipe');
       } else {
         // Auto-save recipe for logged-in users
-        if (user && accessToken) {
+        const token = accessToken || localStorage.getItem('access_token');
+        if (token) {
           try {
+            console.log('Auto-saving recipe for logged-in user...');
             await axios.post('/api/save-recipe', response.data, {
               headers: {
-                Authorization: `Bearer ${accessToken}`
+                Authorization: `Bearer ${token}`
               }
             });
+            console.log('Recipe auto-saved successfully');
             // Refresh saved recipes list
-            loadSavedRecipes();
+            loadSavedRecipes(token);
           } catch (saveError) {
             console.error('Error auto-saving recipe:', saveError);
             // Don't show error to user - recipe still displays fine
           }
+        } else {
+          console.log('No access token available, skipping auto-save');
         }
       }
     } catch (err: any) {
