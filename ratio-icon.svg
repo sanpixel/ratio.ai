@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with subtle gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 16px padding means content area is 96x96 centered -->
+  <!-- Content area: x=16, y=16, width=96, height=96 -->
+  
+  <!-- Background circle (slightly smaller than 96px for visual balance) -->
+  <circle cx="64" cy="64" r="44" fill="url(#bgGradient)" filter="url(#glow)"/>
+  
+  <!-- Main ratio text: 3:2:1 -->
+  <text x="64" y="58" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="28" 
+        font-weight="700" 
+        text-anchor="middle" 
+        fill="white" 
+        letter-spacing="-1px">3:2:1</text>
+  
+  <!-- Subtitle: ratio -->
+  <text x="64" y="78" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="12" 
+        font-weight="500" 
+        text-anchor="middle" 
+        fill="rgba(255,255,255,0.8)" 
+        letter-spacing="0.5px">ratio</text>
+  
+  <!-- Decorative dots to represent ingredients -->
+  <circle cx="42" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="86" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="42" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="86" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+</svg>

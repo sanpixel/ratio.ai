@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratio.ai Icon Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, sans-serif;
+            background: #f0f0f0;
+        }
+        .preview-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .preview-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .light-bg {
+            background: white;
+            border: 1px solid #ddd;
+        }
+        .dark-bg {
+            background: #333;
+            color: white;
+        }
+        svg {
+            display: block;
+            margin: 10px auto;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        .size-guide {
+            display: inline-block;
+            width: 128px;
+            height: 128px;
+            border: 2px dashed #999;
+            position: relative;
+            margin: 10px;
+        }
+        .size-guide::after {
+            content: "128×128";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ratio.ai Extension Icon Preview</h1>
+    
+    <div class="preview-container">
+        <div class="preview-box light-bg">
+            <h3>Light Background</h3>
+            <div class="size-guide">
+                <?xml version="1.0" encoding="UTF-8"?>
+                <svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background circle with subtle gradient -->
+                  <defs>
+                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  
+                  <!-- 16px padding means content area is 96x96 centered -->
+                  <!-- Content area: x=16, y=16, width=96, height=96 -->
+                  
+                  <!-- Background circle (slightly smaller than 96px for visual balance) -->
+                  <circle cx="64" cy="64" r="44" fill="url(#bgGradient)" filter="url(#glow)"/>
+                  
+                  <!-- Main ratio text: 3:2:1 -->
+                  <text x="64" y="58" 
+                        font-family="system-ui, -apple-system, sans-serif" 
+                        font-size="28" 
+                        font-weight="700" 
+                        text-anchor="middle" 
+                        fill="white" 
+                        letter-spacing="-1px">3:2:1</text>
+                  
+                  <!-- Subtitle: ratio -->
+                  <text x="64" y="78" 
+                        font-family="system-ui, -apple-system, sans-serif" 
+                        font-size="12" 
+                        font-weight="500" 
+                        text-anchor="middle" 
+                        fill="rgba(255,255,255,0.8)" 
+                        letter-spacing="0.5px">ratio</text>
+                  
+                  <!-- Decorative dots to represent ingredients -->
+                  <circle cx="42" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="86" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="42" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="86" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="preview-box dark-bg">
+            <h3>Dark Background</h3>
+            <div class="size-guide">
+                <?xml version="1.0" encoding="UTF-8"?>
+                <svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background circle with subtle gradient -->
+                  <defs>
+                    <linearGradient id="bgGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="glow2">
+                      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  
+                  <!-- Background circle (slightly smaller than 96px for visual balance) -->
+                  <circle cx="64" cy="64" r="44" fill="url(#bgGradient2)" filter="url(#glow2)"/>
+                  
+                  <!-- Main ratio text: 3:2:1 -->
+                  <text x="64" y="58" 
+                        font-family="system-ui, -apple-system, sans-serif" 
+                        font-size="28" 
+                        font-weight="700" 
+                        text-anchor="middle" 
+                        fill="white" 
+                        letter-spacing="-1px">3:2:1</text>
+                  
+                  <!-- Subtitle: ratio -->
+                  <text x="64" y="78" 
+                        font-family="system-ui, -apple-system, sans-serif" 
+                        font-size="12" 
+                        font-weight="500" 
+                        text-anchor="middle" 
+                        fill="rgba(255,255,255,0.8)" 
+                        letter-spacing="0.5px">ratio</text>
+                  
+                  <!-- Decorative dots to represent ingredients -->
+                  <circle cx="42" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="86" cy="42" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="42" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+                  <circle cx="86" cy="86" r="2" fill="rgba(255,255,255,0.6)"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>How to Convert to PNG:</h3>
+        <ol>
+            <li><strong>Online Method (Recommended):</strong>
+                <ul>
+                    <li>Go to <a href="https://svgtopng.com" target="_blank">svgtopng.com</a></li>
+                    <li>Upload the <code>ratio-icon.svg</code> file</li>
+                    <li>Set output size to 128×128 pixels</li>
+                    <li>Download the PNG file</li>
+                </ul>
+            </li>
+            <li><strong>Alternative - Right-click method:</strong>
+                <ul>
+                    <li>Right-click on one of the SVG icons above</li>
+                    <li>Select "Save image as..." or "Copy image"</li>
+                    <li>Note: This may not give you exactly 128×128, so the online converter is preferred</li>
+                </ul>
+            </li>
+            <li><strong>Using Photoshop/GIMP:</strong>
+                <ul>
+                    <li>Open the SVG file in your graphics editor</li>
+                    <li>Set canvas size to 128×128 pixels</li>
+                    <li>Export as PNG</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <h4>Icon Specifications Met:</h4>
+        <ul>
+            <li>✅ 128×128 total size</li>
+            <li>✅ 96×96 content area with 16px transparent padding</li>
+            <li>✅ Works on light and dark backgrounds</li>
+            <li>✅ No heavy shadows or edges</li>
+            <li>✅ Faces the viewer</li>
+            <li>✅ PNG format (after conversion)</li>
+        </ul>
+    </div>
+</body>
+</html>

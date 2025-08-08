@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Options for Spices/Seasonings - ratio.ai</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #f0f0f0;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .color-item {
+            background: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            border: 2px solid #555;
+        }
+        .color-info {
+            flex: 1;
+        }
+        .color-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .color-hex {
+            font-family: 'Courier New', monospace;
+            color: #aaa;
+            font-size: 14px;
+        }
+        .current-colors {
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .current-color {
+            display: inline-flex;
+            align-items: center;
+            margin: 5px 15px 5px 0;
+            gap: 8px;
+        }
+        .current-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        h1, h2 {
+            color: #4A9EFF;
+        }
+        .recommended {
+            border: 2px solid #4A9EFF;
+            background: #2a3a4a;
+        }
+        .problem {
+            border: 2px solid #ff4444;
+            background: #4a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Color Options for Spices/Seasonings - ratio.ai</h1>
+    
+    <div class="current-colors">
+        <h3>Current Colors in Use:</h3>
+        <div class="current-color">
+            <div class="current-preview" style="background-color: #228B22;"></div>
+            <span><strong>Flour:</strong> #228B22 (ForestGreen)</span>
+        </div>
+        <div class="current-color">
+            <div class="current-preview" style="background-color: #4169E1;"></div>
+            <span><strong>Liquid:</strong> #4169E1 (RoyalBlue)</span>
+        </div>
+        <div class="current-color">
+            <div class="current-preview" style="background-color: #FF8C00;"></div>
+            <span><strong>Fat:</strong> #FF8C00 (DarkOrange)</span>
+        </div>
+        <div class="current-color">
+            <div class="current-preview" style="background-color: #FF69B4;"></div>
+            <span><strong>Sugar:</strong> #FF69B4 (HotPink)</span>
+        </div>
+        <div class="current-color">
+            <div class="current-preview" style="background-color: #8B0000;"></div>
+            <span><strong>Spices (PROBLEM):</strong> #8B0000 (DarkRed - too dark!)</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔴 Red Variants</h2>
+        <div class="color-grid">
+            <div class="color-item recommended">
+                <div class="color-preview" style="background-color: #DC143C;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #DC143C;">CrimsonRed ⭐</div>
+                    <div class="color-hex">#DC143C</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #B22222;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #B22222;">FireBrick</div>
+                    <div class="color-hex">#B22222</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #CD5C5C;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #CD5C5C;">IndianRed</div>
+                    <div class="color-hex">#CD5C5C</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #F08080;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #F08080;">LightCoral</div>
+                    <div class="color-hex">#F08080</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #FF6347;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #FF6347;">Tomato</div>
+                    <div class="color-hex">#FF6347</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #FF4500;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #FF4500;">OrangeRed</div>
+                    <div class="color-hex">#FF4500</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🟣 Purple Variants</h2>
+        <div class="color-grid">
+            <div class="color-item recommended">
+                <div class="color-preview" style="background-color: #9932CC;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #9932CC;">DarkOrchid ⭐</div>
+                    <div class="color-hex">#9932CC</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #8A2BE2;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #8A2BE2;">BlueViolet</div>
+                    <div class="color-hex">#8A2BE2</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #9370DB;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #9370DB;">MediumPurple</div>
+                    <div class="color-hex">#9370DB</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #BA55D3;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #BA55D3;">MediumOrchid</div>
+                    <div class="color-hex">#BA55D3</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #DA70D6;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #DA70D6;">Orchid</div>
+                    <div class="color-hex">#DA70D6</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #7B68EE;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #7B68EE;">MediumSlateBlue</div>
+                    <div class="color-hex">#7B68EE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🤎 Brown Variants</h2>
+        <div class="color-grid">
+            <div class="color-item recommended">
+                <div class="color-preview" style="background-color: #A0522D;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #A0522D;">Sienna ⭐</div>
+                    <div class="color-hex">#A0522D</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #8B4513;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #8B4513;">SaddleBrown</div>
+                    <div class="color-hex">#8B4513</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #CD853F;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #CD853F;">Peru</div>
+                    <div class="color-hex">#CD853F</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #D2691E;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #D2691E;">Chocolate</div>
+                    <div class="color-hex">#D2691E</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #BC8F8F;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #BC8F8F;">RosyBrown</div>
+                    <div class="color-hex">#BC8F8F</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #DEB887;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #DEB887;">BurlyWood</div>
+                    <div class="color-hex">#DEB887</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🟡 Yellow/Gold Variants</h2>
+        <div class="color-grid">
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #DAA520;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #DAA520;">GoldenRod</div>
+                    <div class="color-hex">#DAA520</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #B8860B;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #B8860B;">DarkGoldenRod</div>
+                    <div class="color-hex">#B8860B</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #FFD700;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #FFD700;">Gold</div>
+                    <div class="color-hex">#FFD700</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #FFA500;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #FFA500;">Orange</div>
+                    <div class="color-hex">#FFA500</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #FF8C69;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #FF8C69;">Salmon</div>
+                    <div class="color-hex">#FF8C69</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #F4A460;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #F4A460;">SandyBrown</div>
+                    <div class="color-hex">#F4A460</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🟢 Green Variants (Different from Flour)</h2>
+        <div class="color-grid">
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #2E8B57;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #2E8B57;">SeaGreen</div>
+                    <div class="color-hex">#2E8B57</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #3CB371;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #3CB371;">MediumSeaGreen</div>
+                    <div class="color-hex">#3CB371</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #8FBC8F;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #8FBC8F;">DarkSeaGreen</div>
+                    <div class="color-hex">#8FBC8F</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #6B8E23;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #6B8E23;">OliveDrab</div>
+                    <div class="color-hex">#6B8E23</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #9ACD32;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #9ACD32;">YellowGreen</div>
+                    <div class="color-hex">#9ACD32</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #90EE90;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #90EE90;">LightGreen</div>
+                    <div class="color-hex">#90EE90</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔵 Blue Variants (Different from Liquid)</h2>
+        <div class="color-grid">
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #4682B4;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #4682B4;">SteelBlue</div>
+                    <div class="color-hex">#4682B4</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #5F9EA0;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #5F9EA0;">CadetBlue</div>
+                    <div class="color-hex">#5F9EA0</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #6495ED;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #6495ED;">CornflowerBlue</div>
+                    <div class="color-hex">#6495ED</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #008B8B;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #008B8B;">DarkCyan</div>
+                    <div class="color-hex">#008B8B</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #20B2AA;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #20B2AA;">LightSeaGreen</div>
+                    <div class="color-hex">#20B2AA</div>
+                </div>
+            </div>
+            <div class="color-item">
+                <div class="color-preview" style="background-color: #48D1CC;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #48D1CC;">MediumTurquoise</div>
+                    <div class="color-hex">#48D1CC</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>❌ Problem Color</h2>
+        <div class="color-grid">
+            <div class="color-item problem">
+                <div class="color-preview" style="background-color: #8B0000;"></div>
+                <div class="color-info">
+                    <div class="color-name" style="color: #8B0000;">DarkRed (Current - Too Dark!)</div>
+                    <div class="color-hex">#8B0000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; padding: 20px; background: #333; border-radius: 8px;">
+        <h3>📋 Instructions:</h3>
+        <p>1. Open this file in your browser</p>
+        <p>2. Look at the colors on the dark background (matches your app)</p>
+        <p>3. Find one that looks good for spices/seasonings</p>
+        <p>4. Tell me the hex code (e.g., #DC143C) and I'll update the app</p>
+        <p><strong>Recommended:</strong> Colors marked with ⭐ have good contrast and visibility</p>
+    </div>
+</body>
+</html>
