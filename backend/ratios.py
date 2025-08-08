@@ -85,11 +85,11 @@ class RatioCalculator:
                 if unit in self.volume_units:
                     # Convert volume to cups
                     volume_in_cups = quantity * self.volume_units[unit]
-                    return volume_in_cups * density_per_cup
+                    return round(volume_in_cups * density_per_cup, 1)
                 elif unit in self.weight_units:
                     # Already in weight, convert to grams
                     weight_in_grams = quantity * self.weight_units[unit]
-                    return weight_in_grams
+                    return round(weight_in_grams, 1)
             
             logger.warning(f"Missing density or unknown unit for {ingredient['name']}")
             return 0

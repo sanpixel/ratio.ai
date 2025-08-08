@@ -17,6 +17,7 @@ class RecipeParser:
         cleaned_text = re.sub(r'^[▢•\s]+', '', ingredient_text)
         
         # Replace unicode fractions with regular fractions
+        # Handle mixed numbers like "1¾" -> "1 3/4" (with space)
         unicode_fractions = {
             '½': '1/2',
             '⅓': '1/3', 
@@ -29,7 +30,14 @@ class RecipeParser:
             '⅞': '7/8'
         }
         
+        # First, handle mixed numbers (digit + unicode fraction)
         for unicode_frac, regular_frac in unicode_fractions.items():
+            # Replace patterns like "1¾" with "1 3/4" (add space)
+            pattern = r'(\d+)' + re.escape(unicode_frac)
+            replacement = r'\1 ' + regular_frac
+            cleaned_text = re.sub(pattern, replacement, cleaned_text)
+            
+            # Then replace any remaining standalone unicode fractions
             cleaned_text = cleaned_text.replace(unicode_frac, regular_frac)
         
         # Check for dual measurements first (e.g., "50g/3 tbsp")

@@ -377,9 +377,9 @@ useEffect(() => {
   const getIngredientCategoryColor = (ingredientName: string): string => {
     const name = ingredientName.toLowerCase();
     
-    // Flour category - Green
+    // Flour category - Gold
     if (name.includes('flour') || name.includes('pasta') || name.includes('bread') || name.includes('cornstarch')) {
-      return '#228B22'; // ForestGreen
+      return '#FFD700'; // Gold
     }
     
     // Liquid category - Blue  
@@ -400,8 +400,8 @@ useEffect(() => {
       return '#FF69B4'; // HotPink
     }
     
-    // Default - dark red for seasonings, mix-ins, etc.
-    return '#8B0000'; // DarkRed
+    // Default - medium sea green for seasonings, mix-ins, etc.
+    return '#3CB371'; // MediumSeaGreen
   };
 
   const updateIngredient = async (index: number, field: keyof Ingredient, value: string | number) => {
