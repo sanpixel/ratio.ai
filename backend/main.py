@@ -219,7 +219,8 @@ async def get_user(user: User = Depends(get_current_user)):
         "id": user.id,
         "name": user.name,
         "email": user.email,
-        "picture": user.picture
+        "picture": user.picture,
+        "animal_handle": generate_animal_handle(user.email)
     }
 
 @app.get("/api/saved-recipes")

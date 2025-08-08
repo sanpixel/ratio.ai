@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { uniqueNamesGenerator, Config, adjectives, animals } from 'unique-names-generator';
 import './App.css';
 
 interface Ingredient {
@@ -37,6 +36,7 @@ interface User {
   name: string;
   email: string;
   picture?: string;
+  animal_handle?: string;
 }
 
 // Global Google types
@@ -105,16 +105,6 @@ function App() {
 
   const theme = getThemeStyles();
 
-  // Animal handle generation function
-  const generateAnimalHandle = (email: string): string => {
-    const config: Config = {
-      dictionaries: [adjectives, animals],
-      separator: '',
-      style: 'capital',
-      seed: email
-    };
-    return uniqueNamesGenerator(config);
-  };
 
   // Random greeting function
   const getRandomGreeting = (animalHandle: string): string => {
@@ -690,7 +680,7 @@ useEffect(() => {
                   <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
                 )}
                 <div>
-                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(generateAnimalHandle(user.email))}</h3>
+                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
                   <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>({user.email})</p>
                 </div>
               </div>
