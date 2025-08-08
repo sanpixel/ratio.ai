@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "ratio.ai Recipe Extractor",
+  "version": "1.0.0",
+  "description": "Extract recipe ratios directly from any recipe website with one click",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "https://ratio.ai/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ratio.ai Recipe Extractor"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html", "popup.css"],
+      "matches": ["*://*/*"]
+    }
+  ]
+}

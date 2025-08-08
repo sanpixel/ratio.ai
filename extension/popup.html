@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ratio.ai</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 350px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      color: #f0f0f0;
+    }
+    
+    .header {
+      background: #2a2a2a;
+      padding: 16px;
+      border-bottom: 1px solid #404040;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4A9EFF;
+      margin-bottom: 4px;
+    }
+    
+    .subtitle {
+      font-size: 12px;
+      color: #aaa;
+    }
+    
+    .content {
+      padding: 16px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #333;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    
+    .user-details h3 {
+      font-size: 14px;
+      color: #f0f0f0;
+    }
+    
+    .user-details p {
+      font-size: 12px;
+      color: #aaa;
+    }
+    
+    .login-section {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .login-btn {
+      background: #4A9EFF;
+      color: #121212;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .login-btn:hover {
+      background: #3a8eff;
+    }
+    
+    .current-page {
+      margin-bottom: 16px;
+    }
+    
+    .page-info {
+      background: #333;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .recipe-detected {
+      background: #1a4d3a;
+      border: 1px solid #22c55e;
+    }
+    
+    .extract-btn {
+      width: 100%;
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    
+    .extract-btn:hover {
+      background: #16a34a;
+    }
+    
+    .extract-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    
+    .recent-recipes {
+      margin-top: 16px;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #f0f0f0;
+    }
+    
+    .recipe-item {
+      background: #333;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 12px;
+    }
+    
+    .recipe-item:hover {
+      background: #404040;
+    }
+    
+    .recipe-title {
+      color: #f0f0f0;
+      margin-bottom: 2px;
+    }
+    
+    .recipe-url {
+      color: #aaa;
+      font-size: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      border: 2px solid #333;
+      border-top: 2px solid #4A9EFF;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      background: #4a1a1a;
+      border: 1px solid #ef4444;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #ef4444;
+      margin-bottom: 8px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">ratio.ai</div>
+    <div class="subtitle">Recipe Ratio Extractor</div>
+  </div>
+  
+  <div class="content">
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Loading...</div>
+    </div>
+    
+    <!-- Error State -->
+    <div id="error" class="error hidden"></div>
+    
+    <!-- Login Section -->
+    <div id="login-section" class="login-section hidden">
+      <p style="margin-bottom: 16px; font-size: 14px;">Sign in to save your recipes</p>
+      <button id="login-btn" class="login-btn">Sign in with Google</button>
+    </div>
+    
+    <!-- User Info Section -->
+    <div id="user-section" class="hidden">
+      <div class="user-info">
+        <img id="user-avatar" class="user-avatar" src="" alt="Profile">
+        <div class="user-details">
+          <h3 id="user-greeting"></h3>
+          <p id="user-email"></p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Current Page Section -->
+    <div id="current-page" class="current-page hidden">
+      <div class="section-title">Current Page</div>
+      <div id="page-info" class="page-info">
+        <div id="page-title"></div>
+        <div id="page-url" class="recipe-url"></div>
+      </div>
+      <button id="extract-btn" class="extract-btn" disabled>
+        📊 Extract Ratios
+      </button>
+    </div>
+    
+    <!-- Recent Recipes Section -->
+    <div id="recent-recipes" class="recent-recipes hidden">
+      <div class="section-title">Recent Extractions</div>
+      <div id="recipes-list"></div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
