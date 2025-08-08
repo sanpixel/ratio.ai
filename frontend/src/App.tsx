@@ -202,6 +202,42 @@ useEffect(() => {
     }
   }, []);
 
+  // Handle recipe URLs from extension
+  useEffect(() => {
+    const handleExtensionRecipe = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const recipeParam = urlParams.get('recipe');
+      
+      if (recipeParam) {
+        try {
+          const recipeData = JSON.parse(decodeURIComponent(recipeParam));
+          console.log('Extension recipe data:', recipeData);
+          
+          if (recipeData.url && recipeData.fromExtension) {
+            // Skip loading animation for extension requests
+            setIsInitialLoading(false);
+            setShowMainApp(true);
+            
+            // Set the URL and automatically process the recipe
+            setUrl(recipeData.url);
+            
+            // Auto-process the recipe
+            await processRecipeFromUrl(recipeData.url, recipeData.title);
+            
+            // Clean up URL parameters
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+        } catch (error) {
+          console.error('Error parsing extension recipe data:', error);
+        }
+      }
+    };
+    
+    // Only run once on mount
+    handleExtensionRecipe();
+  }, []);
+
   const handleGoogleResponse = async (response: any) => {
     try {
       console.log('Google response received:', response.credential ? 'Token received' : 'No token');
@@ -269,21 +305,16 @@ useEffect(() => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!url.trim()) {
-      setError('Please enter a recipe URL');
-      return;
-    }
-
+  // Process recipe from URL (shared function for form submission and extension)
+  const processRecipeFromUrl = async (recipeUrl: string, expectedTitle?: string) => {
     setLoading(true);
     setError('');
     setRecipe(null);
 
     try {
+      console.log('Processing recipe URL:', recipeUrl);
       const response = await axios.post('/api/process-recipe', {
-        url: url
+        url: recipeUrl
       });
       
       setRecipe(response.data);
@@ -308,10 +339,22 @@ useEffect(() => {
         }
       }
     } catch (err: any) {
+      console.error('Error processing recipe:', err);
       setError(err.response?.data?.detail || 'Error processing recipe');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!url.trim()) {
+      setError('Please enter a recipe URL');
+      return;
+    }
+
+    await processRecipeFromUrl(url);
   };
 
   const getIngredientCategoryColor = (ingredientName: string): string => {
