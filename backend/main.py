@@ -16,11 +16,59 @@ from ratios import RatioCalculator
 from database import get_db, create_tables
 from models import User, SavedRecipe
 from auth import verify_google_token, create_access_token, get_current_user
-from unique_names_generator import generate
+import hashlib
+import random
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Animal handle generation
+def generate_animal_handle(email: str) -> str:
+    """Generate consistent animal handle from email using hash"""
+    # Animal names
+    animals = [
+        "Aardvark", "Albatross", "Alligator", "Alpaca", "Ant", "Anteater", "Antelope", "Ape",
+        "Armadillo", "Baboon", "Badger", "Barracuda", "Bat", "Bear", "Beaver", "Bee",
+        "Beetle", "Bison", "Boar", "Buffalo", "Butterfly", "Camel", "Capybara", "Cardinal",
+        "Caribou", "Cassowary", "Cat", "Caterpillar", "Cattle", "Chameleon", "Cheetah", "Chicken",
+        "Chimpanzee", "Chinchilla", "Chipmunk", "Clam", "Cobra", "Cockroach", "Cod", "Condor",
+        "Cougar", "Cow", "Coyote", "Crab", "Crane", "Cricket", "Crocodile", "Crow", "Deer",
+        "Dinosaur", "Dog", "Dolphin", "Donkey", "Dove", "Dragon", "Dragonfly", "Duck", "Eagle",
+        "Elephant", "Elk", "Emu", "Falcon", "Ferret", "Finch", "Fish", "Flamingo", "Fly",
+        "Fox", "Frog", "Gazelle", "Gecko", "Gerbil", "Giraffe", "Goat", "Goldfish", "Goose",
+        "Gorilla", "Grasshopper", "Hamster", "Hare", "Hawk", "Hedgehog", "Heron", "Hippo",
+        "Horse", "Hummingbird", "Hyena", "Iguana", "Jackal", "Jaguar", "Jellyfish", "Kangaroo",
+        "Koala", "Ladybug", "Lamb", "Lemur", "Leopard", "Lion", "Lizard", "Llama", "Lobster",
+        "Lynx", "Macaw", "Magpie", "Manatee", "Meerkat", "Mole", "Monkey", "Moose", "Mosquito",
+        "Mouse", "Mule", "Narwhal", "Newt", "Nightingale", "Octopus", "Opossum", "Orangutan",
+        "Ostrich", "Otter", "Owl", "Panda", "Panther", "Parrot", "Peacock", "Pelican",
+        "Penguin", "Pig", "Pigeon", "Platypus", "Porcupine", "Puma", "Python", "Quail",
+        "Rabbit", "Raccoon", "Rat", "Raven", "Reindeer", "Rhino", "Robin", "Rooster", "Salamander",
+        "Salmon", "Seal", "Shark", "Sheep", "Shrimp", "Skunk", "Sloth", "Snail", "Snake",
+        "Sparrow", "Spider", "Squid", "Squirrel", "Stingray", "Swan", "Tiger", "Toad",
+        "Tortoise", "Turkey", "Turtle", "Walrus", "Wasp", "Whale", "Wolf", "Wombat", "Zebra"
+    ]
+    
+    # Adjectives
+    adjectives = [
+        "Adorable", "Adventurous", "Agile", "Alert", "Ambitious", "Amusing", "Brave", "Bright",
+        "Brilliant", "Calm", "Careful", "Charming", "Cheerful", "Clever", "Colorful", "Cool",
+        "Creative", "Curious", "Daring", "Dazzling", "Determined", "Dynamic", "Eager", "Elegant",
+        "Energetic", "Enthusiastic", "Fearless", "Fierce", "Friendly", "Funny", "Gentle", "Graceful",
+        "Happy", "Helpful", "Hopeful", "Humble", "Imaginative", "Independent", "Intelligent", "Jolly",
+        "Joyful", "Kind", "Lively", "Lucky", "Magnificent", "Majestic", "Merry", "Mighty",
+        "Noble", "Optimistic", "Patient", "Peaceful", "Playful", "Pleasant", "Polite", "Proud",
+        "Quick", "Quiet", "Radiant", "Reliable", "Respectful", "Skillful", "Smart", "Spectacular",
+        "Spirited", "Strong", "Successful", "Swift", "Thoughtful", "Vibrant", "Wise", "Wonderful"
+    ]
+    
+    # Use email hash to consistently select adjective and animal
+    email_hash = hashlib.sha256(email.encode()).hexdigest()
+    adj_index = int(email_hash[:8], 16) % len(adjectives)
+    animal_index = int(email_hash[8:16], 16) % len(animals)
+    
+    return f"{adjectives[adj_index]}{animals[animal_index]}"
 
 app = FastAPI(title="ratio.ai API", version="1.0.0")
 
@@ -184,7 +232,7 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
     result = []
     for recipe, recipe_user in recipes_with_users:
         # Generate animal handle on backend using email as seed - email never leaves server
-        animal_handle = generate(separator='', seed=recipe_user.email, style='capital')
+        animal_handle = generate_animal_handle(recipe_user.email)
         
         recipe_dict = {
             "id": recipe.id,
