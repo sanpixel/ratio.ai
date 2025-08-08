@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { uniqueNamesGenerator, Config, adjectives, animals } from 'unique-names-generator';
 import './App.css';
 
 interface Ingredient {
@@ -101,6 +102,40 @@ function App() {
   };
 
   const theme = getThemeStyles();
+
+  // Animal handle generation function
+  const generateAnimalHandle = (email: string): string => {
+    const config: Config = {
+      dictionaries: [adjectives, animals],
+      separator: '',
+      style: 'capital',
+      seed: email
+    };
+    return uniqueNamesGenerator(config);
+  };
+
+  // Random greeting function
+  const getRandomGreeting = (animalHandle: string): string => {
+    const greetings = [
+      `Hey there, ${animalHandle}!`,
+      `Ready to cook, ${animalHandle}?`,
+      `What's cooking, ${animalHandle}?`,
+      `Time to ratio, ${animalHandle}!`,
+      `Let's get cooking, ${animalHandle}!`,
+      `Good to see you, ${animalHandle}!`,
+      `Hey ${animalHandle}!`,
+      `Looking good, ${animalHandle}!`,
+      `You're in, ${animalHandle}!`,
+      `Howdy, ${animalHandle}!`,
+      `Sup, ${animalHandle}!`,
+      `${animalHandle} is in the house!`,
+      `Chef ${animalHandle}!`
+    ];
+    
+    // Use current time to ensure different greeting each time (not based on email)
+    const randomIndex = Math.floor(Math.random() * greetings.length);
+    return greetings[randomIndex];
+  };
 
   // Handle initial loading animation
 useEffect(() => {
@@ -653,8 +688,8 @@ useEffect(() => {
                   <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
                 )}
                 <div>
-                  <h3 className="font-semibold" style={{ color: theme.textColor }}>Welcome, {user.name}!</h3>
-                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>{user.email}</p>
+                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(generateAnimalHandle(user.email))}</h3>
+                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>({user.email})</p>
                 </div>
               </div>
               <button

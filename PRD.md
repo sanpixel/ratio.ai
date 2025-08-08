@@ -50,10 +50,12 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
    - All processed recipes saved for logged-in users
    - No manual save action required
    - Seamless integration with recipe processing pipeline
-4. **Recent Recipes Display**: ✅ User-specific recipe history
-   - Shows last 33 processed recipes per user
-   - Quick-access buttons for previously processed recipes
-   - One-click re-processing of saved recipes
+4. **Community Recent Recipes Display**: ✅ Global recipe discovery feed
+   - Shows last 5 processed recipes from all users (expandable)
+   - Privacy-friendly anonymous animal handles (e.g., "CuriousPenguin", "HungryBear")
+   - Sort functionality: by user handle or chronological order
+   - Quick-access buttons for re-processing any community recipe
+   - User's own recipes highlighted/distinguished in the feed
 5. **Enhanced UI/UX**: ✅ Improved user experience
    - Dark/light theme toggle
    - Mobile-responsive design
@@ -98,6 +100,14 @@ ratio.ai is a web application that takes a recipe URL and distills it into a cle
 - Unit conversion and ratio calculation logic
 - Clean, mobile-friendly UI
 - Fast processing and response times
+- **Animal Handle Generation System**:
+  - Deterministic generation based on user ID for consistency
+  - Pool of adjectives (Curious, Hungry, Clever, etc.) + animals (Penguin, Bear, Fox, etc.)
+  - Ensures unique handles per user with fallback numbering if needed
+- **Community Feed Performance**:
+  - Efficient database queries for recent recipes across all users
+  - Pagination/lazy loading for expandable recipe lists
+  - Caching strategy for frequently accessed community data
 
 ## Success Metrics
 - Time to extract ingredients < 5 seconds
