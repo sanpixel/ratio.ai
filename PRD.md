@@ -5,6 +5,11 @@
 **Version:** 1.0  
 **Date:** July 30, 2025  
 
+#section for AI / warp to read and these items should be designed and added to this document:
+
+add ability to log whos logged onto the site with and a separate puloc html that can be scrapped so i get notifications on sms or email
+
+
 ## Problem Statement
 Online recipes are bloated with excessive text, personal stories, and lengthy descriptions that make it difficult to quickly find and use the actual recipe information. Users waste time scrolling through paragraphs to find ingredients and measurements.
 
