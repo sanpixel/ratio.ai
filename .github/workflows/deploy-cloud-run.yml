@@ -34,7 +34,7 @@ jobs:
         gcloud run deploy ${{ env.SERVICE }} \
           --source . \
           --region ${{ env.REGION }} \
-          --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},GCP_SA_KEY=${{ secrets.GCP_SA_KEY }}" \
+          --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
           --allow-unauthenticated \
           --memory 1Gi \
           --cpu 1 \
