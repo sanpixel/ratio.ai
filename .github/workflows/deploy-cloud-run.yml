@@ -35,8 +35,7 @@ jobs:
         gcloud run deploy ${{ env.SERVICE }} \
           --source . \
           --region ${{ env.REGION }} \
-          --build-service-account projects/${{ env.PROJECT_ID }}/serviceAccounts/github-actions@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
-          --set-build-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
+          --update-env-vars="REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }},DATABASE_URL=${{ secrets.DATABASE_URL }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
           --allow-unauthenticated \
           --memory 1Gi \
           --cpu 1 \
