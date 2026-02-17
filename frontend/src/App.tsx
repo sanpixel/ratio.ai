@@ -776,7 +776,7 @@ useEffect(() => {
         <div style={{ 
           backgroundColor: theme.cardBg, 
           border: `1px solid ${theme.cardBorder}`, 
-          padding: '32px',
+          padding: '16px',
           marginTop: '24px'
         }}>
           <div style={{ marginBottom: '32px' }}>
@@ -931,43 +931,99 @@ useEffect(() => {
         {/* 3. My Saved Recipes - Only show when logged in */}
         {/* 3. My Saved Recipes - Only show when logged in */}
         {user && myRecipes.length > 0 && (
-          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>📚 My Saved Recipes</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-              {myRecipes.map((savedRecipe, index) => (
-                <button
-                  key={savedRecipe.id}
-                  onClick={() => {
-                    setRecipe({
-                      title: savedRecipe.title,
-                      url: savedRecipe.url,
-                      ingredients: savedRecipe.ingredients,
-                      ratios: savedRecipe.ratios,
-                      success: true
-                    });
-                    setUrl(savedRecipe.url);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="p-3 rounded-lg text-left transition-all"
-                  style={{
-                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
-                    color: theme.textColor,
-                    border: `1px solid ${theme.tableBorder}`
-                  }}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      backgroundColor: theme.buttonBg,
-                      color: '#fff',
-                      fontSize: '11px',
-                      fontWeight: 'bold'
-                    }}>
+          <>
+            <div className="mb-6 sm:mb-8 border-t-2" style={{ borderColor: theme.tableBorder, paddingTop: '24px' }}></div>
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+              <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>📚 {user.animal_handle}'s Recipes</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                {myRecipes.map((savedRecipe, index) => (
+                  <div key={savedRecipe.id} style={{ position: 'relative' }} className="group">
+                    <button
+                      onClick={() => {
+                        setRecipe({
+                          title: savedRecipe.title,
+                          url: savedRecipe.url,
+                          ingredients: savedRecipe.ingredients,
+                          ratios: savedRecipe.ratios,
+                          success: true
+                        });
+                        setUrl(savedRecipe.url);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="p-3 rounded-lg text-left transition-all w-full"
+                      style={{
+                        backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                        color: theme.textColor,
+                        border: `1px solid ${theme.tableBorder}`
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '20px',
+                          height: '20px',
+                          borderRadius: '50%',
+                          backgroundColor: theme.buttonBg,
+                          color: '#fff',
+                          fontSize: '11px',
+                          fontWeight: 'bold'
+                        }}>
+                          {myRecipes.length - index}
+                        </span>
+                        <span className="text-xs" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
+                          {new Date(savedRecipe.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="truncate text-sm">
+                        {savedRecipe.title.length > 30 ? savedRecipe.title.substring(0, 30) + '...' : savedRecipe.title}
+                      </div>
+                    </button>
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (window.confirm('Delete this recipe?')) {
+                          try {
+                            await axios.delete(`/api/delete-recipe/${savedRecipe.id}`, {
+                              headers: { Authorization: `Bearer ${accessToken}` }
+                            });
+                            setMyRecipes(myRecipes.filter(r => r.id !== savedRecipe.id));
+                          } catch (error) {
+                            console.error('Error deleting recipe:', error);
+                          }
+                        }
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{
+                        position: 'absolute',
+                        top: '4px',
+                        right: '4px',
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        backgroundColor: '#ef4444',
+                        color: '#fff',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
                       {myRecipes.length - index}
                     </span>
                     <span className="text-xs" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>

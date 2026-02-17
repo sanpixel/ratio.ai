@@ -212,6 +212,17 @@ async def save_recipe(
         logger.error(f"Recipe data that failed: {recipe}")
         raise HTTPException(status_code=500, detail=f"Failed to save recipe: {str(e)}")
 
+@app.delete("/api/delete-recipe/{recipe_id}")
+async def delete_recipe(recipe_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Delete a saved recipe"""
+    recipe = db.query(SavedRecipe).filter(SavedRecipe.id == recipe_id, SavedRecipe.user_id == user.id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    db.delete(recipe)
+    db.commit()
+    return {"message": "Recipe deleted successfully"}
+
 @app.get("/api/user")
 async def get_user(user: User = Depends(get_current_user)):
     """Get current authenticated user info"""
