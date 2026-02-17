@@ -934,7 +934,7 @@ useEffect(() => {
           <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
             <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>📚 My Saved Recipes</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-              {myRecipes.map((savedRecipe) => (
+              {myRecipes.map((savedRecipe, index) => (
                 <button
                   key={savedRecipe.id}
                   onClick={() => {
@@ -955,7 +955,28 @@ useEffect(() => {
                     border: `1px solid ${theme.tableBorder}`
                   }}
                 >
-                  📋 {savedRecipe.title.length > 30 ? savedRecipe.title.substring(0, 30) + '...' : savedRecipe.title}
+                  <div className="flex items-center gap-2 mb-1">
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      backgroundColor: theme.buttonBg,
+                      color: '#fff',
+                      fontSize: '11px',
+                      fontWeight: 'bold'
+                    }}>
+                      {myRecipes.length - index}
+                    </span>
+                    <span className="text-xs" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
+                      {new Date(savedRecipe.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="truncate">
+                    {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
+                  </div>
                 </button>
               ))}
             </div>

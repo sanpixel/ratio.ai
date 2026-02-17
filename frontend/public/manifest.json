@@ -1,0 +1,17 @@
+{
+  "short_name": "ratio.ai",
+  "name": "ratio.ai - Recipe Ratios",
+  "icons": [
+    {
+      "src": "scales.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4A9EFF",
+  "background_color": "#1a1a1a",
+  "description": "Transform bloated recipes into clean, memorable ratios"
+}
