@@ -267,6 +267,173 @@ async def get_my_recipes(user: User = Depends(get_current_user), db: Session = D
     
     return result
 
+@app.get("/ext")
+async def extension_stats(db: Session = Depends(get_db)):
+    """Show domain statistics for extension coverage"""
+    from urllib.parse import urlparse
+    from collections import defaultdict
+    
+    # Get all saved recipes
+    recipes = db.query(SavedRecipe).all()
+    
+    # Count recipes per domain
+    domain_counts = defaultdict(int)
+    for recipe in recipes:
+        try:
+            parsed = urlparse(recipe.url)
+            domain = parsed.netloc.replace('www.', '')
+            domain_counts[domain] += 1
+        except:
+            continue
+    
+    # Sort by count
+    sorted_domains = sorted(domain_counts.items(), key=lambda x: x[1], reverse=True)
+    
+    # Extension supported domains (from manifest.json)
+    supported_domains = [
+        'allrecipes.com', 'foodnetwork.com', 'recipetineats.com', 'tasteofhome.com',
+        'epicurious.com', 'simplyrecipes.com', 'seriouseats.com', 'bonappetit.com',
+        'foodandwine.com', 'delish.com', 'cookinglight.com', 'myrecipes.com',
+        'pinchofyum.com', 'loveandlemons.com', 'minimalistbaker.com', 'budgetbytes.com',
+        'thekitchn.com', 'feelgoodfoodie.net', 'food.com', 'yummly.com',
+        'cooking.nytimes.com', 'skinnytaste.com', 'damndelicious.net', 'gimmesomeoven.com',
+        'onceuponachef.com', 'sallysbakingaddiction.com', 'kingarthurbaking.com',
+        'thespruceeats.com', 'eatingwell.com', 'recipegirl.com', 'wholefoodsmarket.com',
+        'southernliving.com', 'bhg.com', 'marthastewart.com', 'food52.com',
+        'jamieoliver.com', 'gordonramsay.com'
+    ]
+    
+    # Build HTML response
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Extension Domain Coverage</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 1200px; margin: 40px auto; padding: 20px; background: #1a1a1a; color: #f0f0f0; }
+            h1 { color: #4A9EFF; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #404040; }
+            th { background: #2a2a2a; font-weight: bold; }
+            tr:hover { background: #2a2a2a; }
+            .supported { color: #4ade80; }
+            .missing { color: #f87171; font-weight: bold; }
+            .stats { background: #2a2a2a; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+            .stat-item { display: inline-block; margin-right: 30px; }
+        </style>
+    </head>
+    <body>
+        <h1>🔌 Extension Domain Coverage</h1>
+        <div class="stats">
+            <div class="stat-item"><strong>Total Recipes:</strong> {total_recipes}</div>
+            <div class="stat-item"><strong>Unique Domains:</strong> {unique_domains}</div>
+            <div class="stat-item"><strong>Supported Domains:</strong> {supported_count}</div>
+            <div class="stat-item"><strong>Missing Domains:</strong> {missing_count}</div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Domain</th>
+                    <th>Recipe Count</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+    """
+    
+    total_recipes = sum(domain_counts.values())
+    unique_domains = len(domain_counts)
+    supported_count = sum(1 for d, _ in sorted_domains if d in supported_domains)
+    missing_count = unique_domains - supported_count
+    
+    html = html.format(
+        total_recipes=total_recipes,
+        unique_domains=unique_domains,
+        supported_count=supported_count,
+        missing_count=missing_count
+    )
+    
+    for domain, count in sorted_domains:
+        is_supported = domain in supported_domains
+        status_class = "supported" if is_supported else "missing"
+        status_text = "✅ Supported" if is_supported else "❌ Missing"
+        
+        html += f"""
+                <tr>
+                    <td>{domain}</td>
+                    <td>{count}</td>
+                    <td class="{status_class}">{status_text}</td>
+                </tr>
+        """
+    
+    html += """
+            </tbody>
+        </table>
+    </body>
+    </html>
+    """
+    
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(content=html)
+
+@app.get("/api/ext-stats")
+async def extension_stats_json(db: Session = Depends(get_db)):
+    """Get domain statistics as JSON for programmatic access"""
+    from urllib.parse import urlparse
+    from collections import defaultdict
+    
+    # Get all saved recipes
+    recipes = db.query(SavedRecipe).all()
+    
+    # Count recipes per domain
+    domain_counts = defaultdict(int)
+    for recipe in recipes:
+        try:
+            parsed = urlparse(recipe.url)
+            domain = parsed.netloc.replace('www.', '')
+            domain_counts[domain] += 1
+        except:
+            continue
+    
+    # Sort by count
+    sorted_domains = sorted(domain_counts.items(), key=lambda x: x[1], reverse=True)
+    
+    # Extension supported domains (from manifest.json)
+    supported_domains = [
+        'allrecipes.com', 'foodnetwork.com', 'recipetineats.com', 'tasteofhome.com',
+        'epicurious.com', 'simplyrecipes.com', 'seriouseats.com', 'bonappetit.com',
+        'foodandwine.com', 'delish.com', 'cookinglight.com', 'myrecipes.com',
+        'pinchofyum.com', 'loveandlemons.com', 'minimalistbaker.com', 'budgetbytes.com',
+        'thekitchn.com', 'feelgoodfoodie.net', 'food.com', 'yummly.com',
+        'cooking.nytimes.com', 'skinnytaste.com', 'damndelicious.net', 'gimmesomeoven.com',
+        'onceuponachef.com', 'sallysbakingaddiction.com', 'kingarthurbaking.com',
+        'thespruceeats.com', 'eatingwell.com', 'recipegirl.com', 'wholefoodsmarket.com',
+        'southernliving.com', 'bhg.com', 'marthastewart.com', 'food52.com',
+        'jamieoliver.com', 'gordonramsay.com'
+    ]
+    
+    # Build domain list with status
+    domains = []
+    missing_domains = []
+    for domain, count in sorted_domains:
+        is_supported = domain in supported_domains
+        domains.append({
+            "domain": domain,
+            "count": count,
+            "supported": is_supported
+        })
+        if not is_supported:
+            missing_domains.append(domain)
+    
+    return {
+        "total_recipes": sum(domain_counts.values()),
+        "unique_domains": len(domain_counts),
+        "supported_count": sum(1 for d in domains if d["supported"]),
+        "missing_count": len(missing_domains),
+        "domains": domains,
+        "missing_domains": missing_domains
+    }
+
     result = []
     for recipe in recipes:
         recipe_dict = {
