@@ -242,3 +242,50 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+
+
+// Token sharing between website and extension
+// Only run on ratio.clocknumbers.com
+if (window.location.hostname === 'ratio.clocknumbers.com') {
+  console.log('Token sharing enabled for ratio.clocknumbers.com');
+  
+  // Check for token in localStorage and share with extension
+  function shareTokenWithExtension() {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      console.log('Found access token, sharing with extension');
+      chrome.runtime.sendMessage({
+        action: 'storeToken',
+        token: token
+      });
+    }
+  }
+  
+  // Share token immediately
+  shareTokenWithExtension();
+  
+  // Watch for token changes
+  const originalSetItem = localStorage.setItem;
+  localStorage.setItem = function(key, value) {
+    originalSetItem.apply(this, arguments);
+    if (key === 'access_token') {
+      console.log('Access token changed, sharing with extension');
+      chrome.runtime.sendMessage({
+        action: 'storeToken',
+        token: value
+      });
+    }
+  };
+  
+  // Watch for token removal
+  const originalRemoveItem = localStorage.removeItem;
+  localStorage.removeItem = function(key) {
+    originalRemoveItem.apply(this, arguments);
+    if (key === 'access_token') {
+      console.log('Access token removed, clearing extension token');
+      chrome.runtime.sendMessage({
+        action: 'clearToken'
+      });
+    }
+  };
+}

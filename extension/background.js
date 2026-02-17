@@ -63,6 +63,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Keep message channel open for async response
   }
   
+  if (request.action === 'storeToken') {
+    chrome.storage.local.set({ accessToken: request.token }, () => {
+      console.log('Token stored in extension');
+      sendResponse({ success: true });
+    });
+    return true;
+  }
+  
+  if (request.action === 'clearToken') {
+    chrome.storage.local.remove(['accessToken'], () => {
+      console.log('Token cleared from extension');
+      sendResponse({ success: true });
+    });
+    return true;
+  }
+  
   return false;
 });
 
