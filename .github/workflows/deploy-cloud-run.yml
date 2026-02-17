@@ -60,7 +60,7 @@ jobs:
         gcloud run deploy ${{ env.SERVICE }} \
           --image ${{ env.IMAGE }}:${{ github.sha }} \
           --region ${{ env.REGION }} \
-          --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" \
+          --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},SECRET_KEY=${{ secrets.SECRET_KEY_AUTH }}" \
           --allow-unauthenticated \
           --memory 1Gi \
           --cpu 1 \
