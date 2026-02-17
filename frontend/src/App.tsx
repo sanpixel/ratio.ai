@@ -547,6 +547,7 @@ useEffect(() => {
                       success: true
                     });
                     setUrl(savedRecipe.url);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="p-3 rounded-lg text-left transition-all"
                   style={{
@@ -924,62 +925,10 @@ useEffect(() => {
               </p>
             </div>
           )}
-
-          <form onSubmit={handleSubmit} style={{ 
-            marginTop: '30px', 
-            paddingTop: '20px', 
-            borderTop: `1px solid ${theme.tableBorder}`,
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'center'
-          }}>
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Paste another recipe URL here..."
-              style={{ 
-                flex: 1,
-                padding: '12px', 
-                backgroundColor: theme.inputBg,
-                color: theme.inputText,
-                border: `1px solid ${theme.tableBorder}`,
-                borderRadius: '6px'
-              }}
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ 
-                padding: '12px 20px', 
-                backgroundColor: theme.buttonBg, 
-                color: theme.buttonText, 
-                border: 'none', 
-                cursor: 'pointer',
-                borderRadius: '6px',
-                fontWeight: '600'
-              }}
-            >
-              {loading ? 'Processing...' : 'Extract Ratios'}
-            </button>
-          </form>
-          
-          {error && (
-            <div style={{ 
-              color: '#ef4444', 
-              marginTop: '15px',
-              padding: '12px',
-              backgroundColor: isDarkMode ? '#fef2f2' : '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '6px'
-            }}>
-              {error}
-            </div>
-          )}
         </div>
         )}
         
+        {/* 3. My Saved Recipes - Only show when logged in */}
         {/* 3. My Saved Recipes - Only show when logged in */}
         {user && myRecipes.length > 0 && (
           <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
@@ -997,6 +946,7 @@ useEffect(() => {
                       success: true
                     });
                     setUrl(savedRecipe.url);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="p-3 rounded-lg text-left transition-all"
                   style={{
@@ -1029,6 +979,7 @@ useEffect(() => {
                       success: true
                     });
                     setUrl(savedRecipe.url);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
                   style={{
