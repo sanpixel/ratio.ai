@@ -248,6 +248,38 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
         result.append(recipe_dict)
     
     return result
+@app.get("/api/my-recipes")
+async def get_my_recipes(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get only the current user's saved recipes"""
+    recipes = db.query(SavedRecipe).filter(SavedRecipe.user_id == user.id).order_by(SavedRecipe.created_at.desc()).all()
+    
+    result = []
+    for recipe in recipes:
+        recipe_dict = {
+            "id": recipe.id,
+            "title": recipe.title,
+            "url": recipe.url,
+            "ingredients": recipe.ingredients,
+            "ratios": recipe.ratios,
+            "created_at": recipe.created_at
+        }
+        result.append(recipe_dict)
+    
+    return result
+
+    result = []
+    for recipe in recipes:
+        recipe_dict = {
+            "id": recipe.id,
+            "title": recipe.title,
+            "url": recipe.url,
+            "ingredients": recipe.ingredients,
+            "ratios": recipe.ratios,
+            "created_at": recipe.created_at
+        }
+        result.append(recipe_dict)
+
+    return result
 
 @app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):

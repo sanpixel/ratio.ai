@@ -61,6 +61,7 @@ function App() {
     return localStorage.getItem('access_token');
   });
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipe[]>([]);
+  const [myRecipes, setMyRecipes] = useState<SavedRecipe[]>([]);
   
   // Debug flag to disable GIF animation
   const gif_animation_debug = false;
@@ -296,12 +297,21 @@ useEffect(() => {
       return;
     }
     try {
-      const res = await axios.get('/api/saved-recipes', {
+      // Load global recipes
+      const globalRes = await axios.get('/api/saved-recipes', {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
       });
-      setSavedRecipes(res.data);
+      setSavedRecipes(globalRes.data);
+      
+      // Load user's own recipes
+      const myRes = await axios.get('/api/my-recipes', {
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        }
+      });
+      setMyRecipes(myRes.data);
     } catch (error) {
       console.error('Error loading saved recipes:', error);
     }
@@ -730,142 +740,29 @@ useEffect(() => {
           </p>
         </div>
 
-        {/* Login/User Section */}
-        <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
-          {user ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {user.picture && (
-                  <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
-                )}
-                <div>
-                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
-                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>({user.email})</p>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  localStorage.removeItem('access_token');
-                  setAccessToken(null);
-                  setUser(null);
-                  setSavedRecipes([]);
-                }}
-                className="px-4 py-2 rounded-lg font-semibold transition-all"
-                style={{ backgroundColor: theme.buttonBg, color: theme.buttonText }}
-              >
-                Sign Out
-              </button>
-            </div>
-          ) : (
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>Sign in to save your recipes</h3>
-              <div id="google-sign-in-main" className="flex justify-center"></div>
-            </div>
-          )}
-        </div>
-
-        {/* Recent Recipes Section */}
-        {user && savedRecipes.length > 0 && (
-          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🌍 Global Recent Recipes</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-              {savedRecipes.map((savedRecipe) => (
-                <button
-                  key={savedRecipe.id}
-                  onClick={() => {
-                    setRecipe({
-                      title: savedRecipe.title,
-                      url: savedRecipe.url,
-                      ingredients: savedRecipe.ingredients,
-                      ratios: savedRecipe.ratios,
-                      success: true
-                    });
-                    setUrl(savedRecipe.url);
-                  }}
-                  className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
-                    color: theme.textColor,
-                    border: `1px solid ${theme.tableBorder}`
-                  }}
-                >
-                  {savedRecipe.user_picture && (
-                    <img 
-                      src={savedRecipe.user_picture} 
-                      alt="Profile" 
-                      className="w-6 h-6 rounded-full flex-shrink-0" 
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs mb-1" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
-                      {savedRecipe.user_handle || 'Unknown Chef'}
-                    </div>
-                    <div className="truncate">
-                      📋 {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Debug Section - Test Recipe Links */}
-        <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
+        {/* 1. URL Input Form - Always first, always visible */}
+        <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Paste recipe URL here..."
+              className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent text-gray-200 placeholder-gray-400"
+              disabled={loading}
+            />
             <button
-              onClick={() => setUrl('https://www.recipetineats.com/corn-ribs/')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
+              type="submit"
+              disabled={loading}
+              className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              style={{
+                backgroundColor: '#4A9EFF'
+              }}
             >
-              🌽 Corn Ribs
-            </button>
-            <button
-              onClick={() => setUrl('https://feelgoodfoodie.net/recipe/skinny-broccoli-shrimp-pasta-alfredo/#wprm-recipe-container-5888')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
-            >
-              🍤 Broccoli Shrimp Alfredo
-            </button>
-            <button
-              onClick={() => setUrl('https://www.loveandlemons.com/focaccia/')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
-            >
-              🍞 Focaccia
-            </button>
-            <button
-              onClick={() => setUrl('https://pinchofyum.com/the-best-soft-chocolate-chip-cookies')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
-            >
-              🍪 Chocolate Chip Cookies
+              {loading ? 'Processing...' : 'Extract Ratios'}
             </button>
           </div>
-        </div>
-
-        {/* URL Input Form - Only show when no recipe */}
-        {!recipe && (
-          <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <input
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste recipe URL here..."
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent text-gray-200 placeholder-gray-400"
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{
-                  backgroundColor: '#4A9EFF'
-                }}
-              >
-                {loading ? 'Processing...' : 'Extract Ratios'}
-              </button>
-            </div>
-          </form>
-        )}
+        </form>
         
         {/* Error Display */}
         {error && (
@@ -1082,6 +979,150 @@ useEffect(() => {
           )}
         </div>
         )}
+        
+        {/* 3. My Saved Recipes - Only show when logged in */}
+        {user && myRecipes.length > 0 && (
+          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>📚 My Saved Recipes</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              {myRecipes.map((savedRecipe) => (
+                <button
+                  key={savedRecipe.id}
+                  onClick={() => {
+                    setRecipe({
+                      title: savedRecipe.title,
+                      url: savedRecipe.url,
+                      ingredients: savedRecipe.ingredients,
+                      ratios: savedRecipe.ratios,
+                      success: true
+                    });
+                    setUrl(savedRecipe.url);
+                  }}
+                  className="p-3 rounded-lg text-left transition-all"
+                  style={{
+                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                    color: theme.textColor,
+                    border: `1px solid ${theme.tableBorder}`
+                  }}
+                >
+                  📋 {savedRecipe.title.length > 30 ? savedRecipe.title.substring(0, 30) + '...' : savedRecipe.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 4. Global Recent Recipes - Only show when logged in */}
+        {user && savedRecipes.length > 0 && (
+          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🌍 Global Recent Recipes</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              {savedRecipes.map((savedRecipe) => (
+                <button
+                  key={savedRecipe.id}
+                  onClick={() => {
+                    setRecipe({
+                      title: savedRecipe.title,
+                      url: savedRecipe.url,
+                      ingredients: savedRecipe.ingredients,
+                      ratios: savedRecipe.ratios,
+                      success: true
+                    });
+                    setUrl(savedRecipe.url);
+                  }}
+                  className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                    color: theme.textColor,
+                    border: `1px solid ${theme.tableBorder}`
+                  }}
+                >
+                  {savedRecipe.user_picture && (
+                    <img 
+                      src={savedRecipe.user_picture} 
+                      alt="Profile" 
+                      className="w-6 h-6 rounded-full flex-shrink-0" 
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs mb-1" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
+                      {savedRecipe.user_handle || 'Unknown Chef'}
+                    </div>
+                    <div className="truncate">
+                      📋 {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 5. Debug Section - Test Recipe Links */}
+        <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+            <button
+              onClick={() => setUrl('https://www.recipetineats.com/corn-ribs/')}
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
+            >
+              🌽 Corn Ribs
+            </button>
+            <button
+              onClick={() => setUrl('https://feelgoodfoodie.net/recipe/skinny-broccoli-shrimp-pasta-alfredo/#wprm-recipe-container-5888')}
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
+            >
+              🍤 Broccoli Shrimp Alfredo
+            </button>
+            <button
+              onClick={() => setUrl('https://www.loveandlemons.com/focaccia/')}
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
+            >
+              🍞 Focaccia
+            </button>
+            <button
+              onClick={() => setUrl('https://pinchofyum.com/the-best-soft-chocolate-chip-cookies')}
+              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
+            >
+              🍪 Chocolate Chip Cookies
+            </button>
+          </div>
+        </div>
+
+        {/* 6. Login/User Section - Always at bottom */}
+        <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+          {user ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {user.picture && (
+                  <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
+                )}
+                <div>
+                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
+                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>({user.email})</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('access_token');
+                  setAccessToken(null);
+                  setUser(null);
+                  setSavedRecipes([]);
+                  setMyRecipes([]);
+                }}
+                className="px-4 py-2 rounded-lg font-semibold transition-all"
+                style={{ backgroundColor: theme.buttonBg, color: theme.buttonText }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>Sign in to save your recipes</h3>
+              <div id="google-sign-in-main" className="flex justify-center"></div>
+            </div>
+          )}
+        </div>
         
         {/* Footer */}
         <div className="mt-16 pt-8 border-t" style={{ borderColor: theme.tableBorder }}>
