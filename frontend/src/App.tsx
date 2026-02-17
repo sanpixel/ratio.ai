@@ -1017,26 +1017,9 @@ useEffect(() => {
                     </button>
                   </div>
                 ))}
-                    </div>
-                  </button>
-                ))}
               </div>
             </div>
           </>
-        )}
-                      {myRecipes.length - index}
-                    </span>
-                    <span className="text-xs" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
-                      {new Date(savedRecipe.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="truncate">
-                    {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
         )}
 
         {/* 4. Global Recent Recipes - Only show when logged in */}
