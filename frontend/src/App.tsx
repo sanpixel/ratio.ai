@@ -999,18 +999,14 @@ useEffect(() => {
                         position: 'absolute',
                         top: '4px',
                         right: '4px',
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        backgroundColor: '#ef4444',
-                        color: '#fff',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
                         border: 'none',
                         cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '14px',
-                        fontWeight: 'bold'
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        padding: '0',
+                        lineHeight: '1'
                       }}
                     >
                       ×
