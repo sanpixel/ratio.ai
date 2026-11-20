@@ -1146,7 +1146,7 @@ useEffect(() => {
                     });
                     setUrl(savedRecipe.url);
                   }}
-                  className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
+                  className="feed-item p-3 rounded-lg text-left transition-all flex items-center gap-3"
                   style={{
                     backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
                     color: theme.textColor,

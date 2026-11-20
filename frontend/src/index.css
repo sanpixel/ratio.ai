@@ -43,13 +43,13 @@ body[data-mode="day"] .scene .grid { background-image: linear-gradient(rgba(255,
 .scene .palms svg { height: 100%; width: auto; fill: #12061f; display: block; }
 body[data-mode="day"] .scene .palms svg { fill: #4a1a0e; }
 .scene .palms .l { left: -2%; } .scene .palms .r { right: -2%; transform: scaleX(-1); }
-.scene .leaf { position: absolute; top: -40px; font-size: 22px; opacity: .85; animation: fall linear infinite; }
+.scene .leaf { position: absolute; top: -80px; font-size: 46px; opacity: .85; animation: fall linear infinite; }
 .scene .leaf:nth-child(1) { left: 8%;  animation-duration: 13s; animation-delay: -2s; }
-.scene .leaf:nth-child(2) { left: 24%; animation-duration: 17s; animation-delay: -9s; font-size: 16px; }
+.scene .leaf:nth-child(2) { left: 24%; animation-duration: 17s; animation-delay: -9s; font-size: 34px; }
 .scene .leaf:nth-child(3) { left: 41%; animation-duration: 15s; animation-delay: -5s; }
-.scene .leaf:nth-child(4) { left: 63%; animation-duration: 19s; animation-delay: -12s; font-size: 18px; }
+.scene .leaf:nth-child(4) { left: 63%; animation-duration: 19s; animation-delay: -12s; font-size: 38px; }
 .scene .leaf:nth-child(5) { left: 79%; animation-duration: 14s; animation-delay: -7s; }
-.scene .leaf:nth-child(6) { left: 92%; animation-duration: 18s; animation-delay: -1s; font-size: 15px; }
+.scene .leaf:nth-child(6) { left: 92%; animation-duration: 18s; animation-delay: -1s; font-size: 32px; }
 @keyframes fall { 0% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(40px, 55vh) rotate(160deg); } 100% { transform: translate(-20px, 110vh) rotate(340deg); } }
 .loading-veil { background: #12061f; }
 @media (prefers-reduced-motion: reduce) { .scene .grid, .scene .leaf { animation: none; } .scene .leaf { display: none; } }
@@ -214,3 +214,9 @@ body[data-mode="day"] .signed-in { background: rgba(255, 246, 232, .85); }
 .remove-btn:hover { color: var(--pink); background: none; filter: none; box-shadow: none; }
 body[data-mode="day"] .remove-btn { color: rgba(59, 20, 8, .4); }
 .title-row .remove-btn + .flip-btn { margin-left: 0; }
+
+/* every section but the summary uses the same see-through glass as Test Recipe Links */
+.feed-item { background: rgba(255, 61, 139, .12) !important; border: 1px solid rgba(255, 61, 139, .35) !important; box-shadow: none !important; color: var(--cream) !important; }
+.feed-item:hover { background: rgba(255, 140, 66, .22) !important; filter: none; }
+body[data-mode="day"] .feed-item { background: rgba(255, 255, 255, .45) !important; color: #3b1408 !important; }
+.cv-index { background-color: rgba(253, 246, 227, .9); border-top-color: rgba(253, 246, 227, .9); }
