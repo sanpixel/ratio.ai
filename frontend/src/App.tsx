@@ -74,36 +74,41 @@ function App() {
   const getThemeStyles = () => {
     if (isDarkMode) {
       return {
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
-        textColor: '#f0f0f0',
-        cardBg: '#2a2a2a',
-        cardBorder: '#404040',
-        tableBg: '#2a2a2a',
-        tableHeaderBg: '#333333',
-        tableBorder: '#404040',
-        inputBg: '#333333',
-        inputText: '#f0f0f0',
-        buttonBg: '#4A9EFF',
-        buttonText: '#121212'
+        background: 'transparent',
+        textColor: '#fff4e6',
+        cardBg: 'rgba(28, 10, 46, 0.72)',
+        cardBorder: 'rgba(255, 61, 139, 0.45)',
+        tableBg: 'rgba(28, 10, 46, 0.55)',
+        tableHeaderBg: 'rgba(255, 61, 139, 0.18)',
+        tableBorder: 'rgba(255, 140, 66, 0.35)',
+        inputBg: 'rgba(12, 4, 24, 0.7)',
+        inputText: '#fff4e6',
+        buttonBg: '#ff3d8b',
+        buttonText: '#ffffff'
       };
     } else {
       return {
-        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-        textColor: '#212529',
-        cardBg: '#ffffff',
-        cardBorder: '#dee2e6',
-        tableBg: '#ffffff',
-        tableHeaderBg: '#f8f9fa',
-        tableBorder: '#dee2e6',
-        inputBg: '#ffffff',
-        inputText: '#212529',
-        buttonBg: '#4A9EFF',
+        background: 'transparent',
+        textColor: '#3b1408',
+        cardBg: 'rgba(255, 246, 232, 0.82)',
+        cardBorder: 'rgba(214, 84, 34, 0.45)',
+        tableBg: 'rgba(255, 250, 242, 0.8)',
+        tableHeaderBg: 'rgba(255, 166, 77, 0.25)',
+        tableBorder: 'rgba(214, 84, 34, 0.3)',
+        inputBg: 'rgba(255, 255, 255, 0.9)',
+        inputText: '#3b1408',
+        buttonBg: '#d6336c',
         buttonText: '#ffffff'
       };
     }
   };
 
   const theme = getThemeStyles();
+
+  // the dusk scene behind the page (public/index.html) follows the toggle
+  useEffect(() => {
+    document.body.dataset.mode = isDarkMode ? 'night' : 'day';
+  }, [isDarkMode]);
 
 
   // Random greeting function
@@ -473,7 +478,7 @@ useEffect(() => {
       <>
         {/* Loading Screen */}
         <div 
-          className="fixed inset-0 bg-black flex items-center justify-center z-50"
+          className="fixed inset-0 loading-veil flex items-center justify-center z-50"
           style={{
             opacity: showMainApp ? 0 : 1,
             transition: 'opacity 1s ease-in-out'
@@ -500,12 +505,13 @@ useEffect(() => {
             {/* Header - Always visible */}
             <div className="text-center mb-8 sm:mb-12">
               <h1 
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 cursor-pointer transition-all hover:scale-105" 
+                className="wordmark mb-2 cursor-pointer" 
                 style={{color: theme.buttonBg}}
                 onClick={toggleTheme}
                 title="Click to toggle dark/light mode"
               >
-                ratio.ai
+                <span className="wm-ratio">ratio</span><span className="wm-ai">.ai</span>
+                <span className="wm-badge">Thanksgiving edition</span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 px-4">
                 Transform bloated recipes into clean, memorable ratios
@@ -592,9 +598,7 @@ useEffect(() => {
                 type="submit"
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{
-                  backgroundColor: '#4A9EFF'
-                }}
+                style={{}}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
               </button>
@@ -682,7 +686,7 @@ useEffect(() => {
 
           {recipe.ratios['Main Ratio'] && (
             <div className="mb-8 text-center p-4 sm:p-6 bg-gray-700 rounded-lg border border-gray-600">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{color: '#4A9EFF'}}>
+              <h2 className="ratio-neon mb-4">
                 {recipe.ratios['Main Ratio'].ratio_string}
               </h2>
               <p className="text-sm sm:text-base text-gray-300">
@@ -710,9 +714,7 @@ useEffect(() => {
                 type="submit"
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{
-                  backgroundColor: '#4A9EFF'
-                }}
+                style={{}}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
               </button>
@@ -739,12 +741,13 @@ useEffect(() => {
         {/* Header - Always visible */}
         <div className="text-center mb-8 sm:mb-12">
           <h1 
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 cursor-pointer transition-all hover:scale-105" 
+            className="wordmark mb-2 cursor-pointer" 
             style={{color: theme.buttonBg}}
             onClick={toggleTheme}
             title="Click to toggle dark/light mode"
           >
-            ratio.ai
+            <span className="wm-ratio">ratio</span><span className="wm-ai">.ai</span>
+                <span className="wm-badge">Thanksgiving edition</span>
           </h1>
           <p className="text-lg sm:text-xl px-4 mb-4" style={{color: isDarkMode ? '#d1d5db' : '#6b7280'}}>
             Distilling recipes webpages into essential ingredients and foundational ratios.
@@ -881,9 +884,7 @@ useEffect(() => {
                 type="submit"
                 disabled={loading}
                 className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{
-                  backgroundColor: '#4A9EFF'
-                }}
+                style={{}}
               >
                 {loading ? 'Processing...' : 'Extract Ratios'}
               </button>
@@ -1027,13 +1028,7 @@ useEffect(() => {
               borderBottom: `2px solid ${theme.tableBorder}`,
               padding: '32px 0'
             }}>
-              <h2 style={{ 
-                fontSize: '3rem', 
-                fontWeight: '800', 
-                color: theme.buttonBg, 
-                marginBottom: '16px',
-                letterSpacing: '0.05em'
-              }}>
+              <h2 className="ratio-neon" style={{ marginBottom: '16px' }}>
                 {recipe.ratios['Main Ratio'].ratio_string}
               </h2>
               <p style={{ 

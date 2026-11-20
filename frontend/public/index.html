@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1f6fd1" />
+    <meta name="theme-color" content="#12061f" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-180.png" />
@@ -22,11 +22,15 @@
       name="description"
       content="Transform bloated recipes into clean, memorable ratios"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Pacifico&display=swap" />
     <title>ratio.ai - Clean Recipe Ratios</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="scene" aria-hidden="true"><span class="leaf">🍂</span><span class="leaf">🍁</span><span class="leaf">🍂</span><span class="leaf">🍁</span><span class="leaf">🍂</span><span class="leaf">🍁</span><div class="sun"></div><div class="palms"><span class="l"><svg viewBox="0 0 200 400" aria-hidden="true"><path d="M96 400c4-90 10-170 30-250l8 2c-18 80-24 160-26 248z"/><path d="M128 150c-30-30-80-36-118-18 40-4 78 6 112 28zM130 148c-10-44-46-80-92-92 34 22 62 54 84 96zM132 146c14-44 52-74 96-80-40 16-70 44-88 86zM134 150c34-24 80-26 116-6-40-6-78 2-110 18zM131 150c-38 6-70 34-84 72 20-30 50-52 86-62zM135 152c32 12 54 42 58 78-12-30-36-54-64-68z"/></svg></span><span class="r"><svg viewBox="0 0 200 400" aria-hidden="true"><path d="M96 400c4-90 10-170 30-250l8 2c-18 80-24 160-26 248z"/><path d="M128 150c-30-30-80-36-118-18 40-4 78 6 112 28zM130 148c-10-44-46-80-92-92 34 22 62 54 84 96zM132 146c14-44 52-74 96-80-40 16-70 44-88 86zM134 150c34-24 80-26 116-6-40-6-78 2-110 18zM131 150c-38 6-70 34-84 72 20-30 50-52 86-62zM135 152c32 12 54 42 58 78-12-30-36-54-64-68z"/></svg></span></div><div class="grid"></div></div>
     <div id="root"></div>
     <script>if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });</script>
   </body>
