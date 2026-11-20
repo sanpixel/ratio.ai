@@ -32,7 +32,7 @@ let currentTab = null;
 let isRecipeDetected = false;
 
 // API Base URL - change this to your deployed backend URL
-const API_BASE = 'https://ratio-ai-kbrobedkgq-uc.a.run.app';
+const API_BASE = 'https://ratio.clocknumbers.com';
 
 // Initialize popup
 async function init() {

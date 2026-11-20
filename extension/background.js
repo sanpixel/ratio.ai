@@ -2,7 +2,7 @@
 console.log('ratio.ai background service worker loaded');
 
 // API Base URL
-const API_BASE = 'https://ratio-ai-kbrobedkgq-uc.a.run.app';
+const API_BASE = 'https://ratio.clocknumbers.com';
 
 // Handle extension installation
 chrome.runtime.onInstalled.addListener(() => {
