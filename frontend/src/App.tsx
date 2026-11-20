@@ -42,6 +42,9 @@ interface User {
 // The "Sign in to save your recipes" banner. Off until Google sign-in is set up again on this host.
 const SHOW_SIGNIN_BANNER = false;
 
+// The intro video (public/loading-animation.gif) that plays for 7 s before the site. Kept, but off.
+const SHOW_INTRO_ANIMATION = false;
+
 // Global Google types
 declare global {
   interface Window {
@@ -147,7 +150,7 @@ useEffect(() => {
     const currentPath = window.location.pathname;
     const skipLoadingPaths = ['/privacy-policy.html', '/privacy-policy'];
     
-    if (recipeParam || skipLoadingPaths.some(path => currentPath.includes(path))) {
+    if (!SHOW_INTRO_ANIMATION || recipeParam || skipLoadingPaths.some(path => currentPath.includes(path))) {
       // Skip loading animation for extension requests and static pages
       setIsInitialLoading(false);
       setShowMainApp(true);
