@@ -132,3 +132,50 @@ button[type="submit"] { white-space: nowrap; }
   .ingr td:nth-child(1) input, .ingr td:nth-child(2) input, .ingr td:nth-child(3) input { font-size: 13px !important; opacity: .85; }
   .ingr td:nth-child(3)::after { content: none; }
 }
+
+/* ---------- card layout picker (1-5) and the sketch layouts in CardViews.tsx ---------- */
+.view-strip { display: flex; align-items: center; gap: 6px; margin: 18px 0 8px; }
+.view-strip button { width: 40px; height: 40px; padding: 0; border-radius: 10px; font: 400 20px/1 var(--display); background: rgba(28, 10, 46, .72); border: 1px solid rgba(255, 61, 139, .45); box-shadow: none; }
+.view-strip button[aria-pressed="true"] { background: linear-gradient(135deg, var(--pink), var(--orange)); border-color: transparent; box-shadow: 0 0 18px rgba(255, 61, 139, .6); }
+.view-strip span { margin-left: 6px; font: 400 15px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.cv { margin: 8px 0 24px; }
+.cv-ratio { text-align: center; margin: 4px 0 14px; }
+.cv-ratio b { display: block; font: 400 44px/1 var(--display); letter-spacing: .04em; }
+.cv-ratio span { font-size: 13px; text-transform: uppercase; letter-spacing: .14em; opacity: .8; }
+.cv-ratio-big b { font-size: clamp(54px, 14vw, 96px); color: #fff; text-shadow: 0 0 14px var(--pink), 0 0 40px var(--orange); }
+.cv ul { list-style: none; margin: 0; padding: 0; }
+
+.cv-index { background: #fdf6e3; color: #2b2118; border-radius: 6px; padding: 16px 16px 20px; box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  background-image: linear-gradient(transparent 31px, rgba(80,120,200,.35) 32px); background-size: 100% 32px; border-top: 34px solid #fdf6e3; position: relative; }
+.cv-index::before { content: ""; position: absolute; left: 34px; top: -34px; bottom: 0; width: 2px; background: rgba(220,60,60,.45); }
+.cv-index .cv-ratio b { color: #b8325e; text-shadow: none; font-family: "Caveat", var(--script); font-size: 64px; }
+.cv-index .cv-ratio span { color: #6b4a2a; }
+.cv-index li { display: grid; grid-template-columns: 92px 1fr auto; gap: 8px; min-height: 32px; align-items: end; padding-left: 26px; font: 500 22px/32px "Caveat", cursive; }
+.cv-index li.key { font-weight: 700; color: #7a1f2b; }
+.cv-index .gr { font: 12px/32px var(--sans); color: #8a7560; }
+
+.cv-bars .stack { display: flex; height: 26px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 0 0 1px rgba(255,255,255,.15); }
+.cv-bars .stack i { display: block; min-width: 3px; border-right: 1px solid rgba(0,0,0,.35); }
+.cv-bars li { display: grid; grid-template-columns: 12px 1fr 44px auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.cv-bars .dot { width: 12px; height: 12px; border-radius: 50%; }
+.cv-bars .pc { font: 400 18px var(--display); text-align: right; }
+.cv-bars .amt { font-size: 13px; opacity: .8; }
+.cv-bars .also { font-size: 13px; opacity: .75; margin-top: 10px; }
+
+.cv-receipt { background: #fbfbf6; color: #1b1b1b; font: 500 14px/1.6 "Courier Prime", ui-monospace, monospace; padding: 18px 16px; max-width: 420px; margin-left: auto; margin-right: auto;
+  -webkit-mask: radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) 0 0/14px 100%; mask: linear-gradient(#000, #000); box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.cv-receipt .hd { text-align: center; letter-spacing: .1em; margin: 4px 0 10px; }
+.cv-receipt .ln { display: flex; gap: 6px; align-items: baseline; }
+.cv-receipt .ln span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.cv-receipt .dots { flex: 1; border-bottom: 2px dotted #999; transform: translateY(-4px); min-width: 12px; }
+.cv-receipt .tot { font-weight: 700; }
+.cv-receipt .rule { border-top: 2px dashed #555; margin: 10px 0; }
+.cv-receipt .cv-ratio b { color: #1b1b1b; text-shadow: none; font-family: "Courier Prime", monospace; font-weight: 700; font-size: 48px; }
+
+.cv-tiles .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.cv-tiles .tile { border: 2px solid; border-radius: 14px; padding: 14px 12px; display: grid; gap: 2px; background: rgba(12, 4, 24, .55); }
+.cv-tiles .tile b { font: 400 30px/1 var(--display); }
+.cv-tiles .tile span { font-weight: 700; font-size: 16px; text-transform: capitalize; }
+.cv-tiles .tile small { opacity: .7; }
+.cv-tiles .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.cv-tiles .chip { padding: 5px 10px; border-radius: 99px; font-size: 13px; background: rgba(255, 140, 66, .15); border: 1px solid rgba(255, 140, 66, .4); }

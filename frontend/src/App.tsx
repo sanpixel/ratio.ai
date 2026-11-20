@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import CardView from './CardViews';
 
 interface Ingredient {
   name: string;
@@ -60,6 +61,11 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showMainApp, setShowMainApp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  // which card layout to show (1 = the editable table, 2-5 = the sketches in CardViews.tsx)
+  const [cardView, setCardView] = useState<number>(() => {
+    try { return Number(localStorage.getItem('card_view')) || 1; } catch (e) { return 1; }
+  });
+  const pickView = (n: number) => { setCardView(n); try { localStorage.setItem('card_view', String(n)); } catch (e) {} };
   
   // Authentication state
   const [user, setUser] = useState<User | null>(null);
@@ -908,6 +914,14 @@ useEffect(() => {
         )}
 
         {recipe && recipe.success && (
+        <>
+        <div className="view-strip" role="group" aria-label="Card layout">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button key={n} type="button" aria-pressed={cardView === n} onClick={() => pickView(n)}
+              title={['Table', 'Index card', 'Weight bar', 'Receipt', 'Tiles'][n - 1]}>{n}</button>
+          ))}
+          <span>{['Table', 'Index card', 'Weight bar', 'Receipt', 'Tiles'][cardView - 1]}</span>
+        </div>
         <div style={{ 
           backgroundColor: theme.cardBg, 
           border: `1px solid ${theme.cardBorder}`, 
@@ -931,6 +945,7 @@ useEffect(() => {
             </a>
           </div>
 
+          {cardView === 1 ? (<>
           <table className="ingr" style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
@@ -1055,6 +1070,10 @@ useEffect(() => {
             </div>
           )}
 
+          </>) : (
+            <CardView view={cardView} ingredients={recipe.ingredients} ratios={recipe.ratios} colorOf={getIngredientCategoryColor} />
+          )}
+
           <form onSubmit={handleSubmit} style={{ 
             marginTop: '30px', 
             paddingTop: '20px', 
@@ -1108,6 +1127,7 @@ useEffect(() => {
             </div>
           )}
         </div>
+        </>
         )}
         
         {/* Footer */}
