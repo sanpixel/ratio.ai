@@ -18,6 +18,8 @@ interface Recipe {
   ingredients: Ingredient[];
   ratios: any;
   instructions?: string[];
+  savedId?: number;   // set when this card is a saved recipe
+  mine?: boolean;     // saved by the signed-in user, who may remove it
   success: boolean;
   error?: string;
 }
@@ -29,6 +31,7 @@ interface SavedRecipe {
   ingredients: Ingredient[];
   ratios: any;
   instructions?: string[];
+  is_mine?: boolean;
   created_at: string;
   user_handle?: string;
   user_picture?: string;
@@ -395,12 +398,13 @@ useEffect(() => {
         if (token) {
           try {
             console.log('Auto-saving recipe for logged-in user...');
-            await axios.post('/api/save-recipe', response.data, {
+            const saved = await axios.post('/api/save-recipe', response.data, {
               headers: {
                 Authorization: `Bearer ${token}`
               }
             });
             console.log('Recipe auto-saved successfully');
+            if (saved.data && saved.data.id) setRecipe({ ...response.data, savedId: saved.data.id, mine: true });
             // Refresh saved recipes list
             loadSavedRecipes(token);
           } catch (saveError) {
@@ -416,6 +420,21 @@ useEffect(() => {
       setError(err.response?.data?.detail || 'Error processing recipe');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // remove the card on screen from the saved list (only its owner sees the button)
+  const removeSaved = async () => {
+    const token = accessToken || localStorage.getItem('access_token');
+    if (!recipe || !recipe.savedId || !token) return;
+    if (!window.confirm('Remove "' + recipe.title + '" from the saved recipes?')) return;
+    try {
+      await axios.delete('/api/saved-recipes/' + recipe.savedId, { headers: { Authorization: `Bearer ${token}` } });
+      setRecipe(null);
+      setUrl('');
+      loadSavedRecipes(token);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Could not remove that recipe');
     }
   };
 
@@ -588,6 +607,8 @@ useEffect(() => {
                       ingredients: savedRecipe.ingredients,
                       ratios: savedRecipe.ratios,
                       instructions: savedRecipe.instructions || [],
+                      savedId: savedRecipe.id,
+                      mine: !!savedRecipe.is_mine,
                       success: true
                     });
                     setUrl(savedRecipe.url);
@@ -857,6 +878,8 @@ useEffect(() => {
                       ingredients: savedRecipe.ingredients,
                       ratios: savedRecipe.ratios,
                       instructions: savedRecipe.instructions || [],
+                      savedId: savedRecipe.id,
+                      mine: !!savedRecipe.is_mine,
                       success: true
                     });
                     setUrl(savedRecipe.url);
@@ -941,6 +964,9 @@ useEffect(() => {
               fontWeight: '700',
               letterSpacing: '-0.02em'
             }}>{recipe.title}</h2>
+            {recipe.mine && recipe.savedId && (
+              <button type="button" className="remove-btn" title="Remove this recipe from the saved list" onClick={removeSaved}>remove</button>
+            )}
             <button type="button" className="flip-btn" aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
               {flipped ? 'Ingredients' : 'Directions'} <span aria-hidden="true">↻</span>
             </button>

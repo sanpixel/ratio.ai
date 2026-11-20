@@ -207,3 +207,10 @@ body[data-mode="day"] .intro-panel { background: rgba(255, 246, 232, .85); borde
 body[data-mode="day"] .signed-in { background: rgba(255, 246, 232, .85); }
 .sign-out { flex: none; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; background: transparent; border: 1px solid var(--pink); color: var(--pink); box-shadow: none; }
 .sign-out:hover { background: rgba(255, 61, 139, .15); }
+
+/* remove: a faint word beside the title, only for the person who saved the card */
+.remove-btn { flex: none; align-self: center; margin-left: auto; padding: 2px 4px; background: none; border: 0; box-shadow: none;
+  font: 500 11px var(--sans); letter-spacing: .04em; color: rgba(255, 244, 230, .35); text-decoration: underline dotted; }
+.remove-btn:hover { color: var(--pink); background: none; filter: none; box-shadow: none; }
+body[data-mode="day"] .remove-btn { color: rgba(59, 20, 8, .4); }
+.title-row .remove-btn + .flip-btn { margin-left: 0; }

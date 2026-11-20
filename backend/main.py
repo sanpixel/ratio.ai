@@ -228,7 +228,7 @@ async def save_recipe(
         db.add(saved_recipe)
         db.commit()
         logger.info(f"Recipe saved successfully with ID: {saved_recipe.id}")
-        return {"message": "Recipe saved successfully"}
+        return {"message": "Recipe saved successfully", "id": saved_recipe.id}
         
     except Exception as e:
         logger.error(f"Error saving recipe: {str(e)}")
@@ -267,11 +267,24 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
             "instructions": recipe.instructions or [],
             "created_at": recipe.created_at,
             "user_handle": animal_handle,  # Send generated handle instead of email
+            "is_mine": recipe.user_id == user.id,
             "user_picture": recipe_user.picture
         }
         result.append(recipe_dict)
     
     return result
+
+@app.delete("/api/saved-recipes/{recipe_id}")
+async def delete_saved_recipe(recipe_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Remove a saved recipe. Only the person who saved it can."""
+    recipe = db.query(SavedRecipe).filter(SavedRecipe.id == recipe_id).first()
+    if recipe is None:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    if recipe.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Only the person who saved this recipe can remove it")
+    db.delete(recipe)
+    db.commit()
+    return {"removed": recipe_id}
 
 @app.post("/api/process-recipe", response_model=RecipeResponse)
 async def process_recipe(request: RecipeRequest):
