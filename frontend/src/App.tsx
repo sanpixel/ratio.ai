@@ -40,8 +40,8 @@ interface User {
   animal_handle?: string;
 }
 
-// The "Sign in to save your recipes" banner. Off until Google sign-in is set up again on this host.
-const SHOW_SIGNIN_BANNER = false;
+// The "Sign in to save your recipes" banner.
+const SHOW_SIGNIN_BANNER = true;
 
 // The intro video (public/loading-animation.gif) that plays for 7 s before the site. Kept, but off.
 const SHOW_INTRO_ANIMATION = false;
