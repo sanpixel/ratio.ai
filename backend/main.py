@@ -24,6 +24,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Animal handle generation
+RETIRED_HANDLES = {"LivelyBeaver"}
+
 def generate_animal_handle(email: str) -> str:
     """Generate consistent animal handle from email using hash"""
     # Animal names
@@ -67,7 +69,11 @@ def generate_animal_handle(email: str) -> str:
     email_hash = hashlib.sha256(email.encode()).hexdigest()
     adj_index = int(email_hash[:8], 16) % len(adjectives)
     animal_index = int(email_hash[8:16], 16) % len(animals)
-    
+
+    # Handles taken off the list: whoever would get one moves to the next animal
+    while f"{adjectives[adj_index]}{animals[animal_index]}" in RETIRED_HANDLES:
+        animal_index = (animal_index + 1) % len(animals)
+
     return f"{adjectives[adj_index]}{animals[animal_index]}"
 
 app = FastAPI(title="ratio.ai API", version="1.0.0")
