@@ -804,8 +804,8 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* URL Input Form - Only show when no recipe */}
-        {!recipe && (
+        {/* URL Input Form - always here, above the card */}
+        {(
           <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <input
@@ -906,29 +906,19 @@ useEffect(() => {
           padding: '32px',
           marginTop: '24px'
         }}>
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <h2 className="title-ticker" title={recipe.title}>
+              <span className="tt-track"><span>{recipe.title}</span><span aria-hidden="true">{recipe.title}</span></span>
+            </h2>
             <div className="title-row">
-            <h2 style={{ 
-              color: theme.textColor, 
-              marginBottom: '12px', 
-              fontSize: '28px', 
-              fontWeight: '700',
-              letterSpacing: '-0.02em'
-            }}>{recipe.title}</h2>
-            {recipe.mine && recipe.savedId && (
-              <button type="button" className="remove-btn" title="Remove this recipe from the saved list" onClick={removeSaved}>remove</button>
-            )}
-            <button type="button" className="flip-btn" aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
-              {flipped ? 'Ingredients' : 'Directions'} <span aria-hidden="true">↻</span>
-            </button>
+              <a href={recipe.url} target="_blank" rel="noopener noreferrer" className="orig-link">Original recipe →</a>
+              {recipe.mine && recipe.savedId && (
+                <button type="button" className="remove-btn" title="Remove this recipe from the saved list" onClick={removeSaved}>remove</button>
+              )}
+              <button type="button" className="flip-btn" aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
+                {flipped ? 'Ingredients' : 'Directions'} <span aria-hidden="true">↻</span>
+              </button>
             </div>
-            <a href={recipe.url} target="_blank" rel="noopener noreferrer" style={{ 
-              color: theme.buttonBg, 
-              textDecoration: 'none',
-              fontSize: '16px'
-            }}>
-              View Original Recipe →
-            </a>
           </div>
 
           {flipped ? (
@@ -1069,45 +1059,6 @@ useEffect(() => {
             <CardView view={cardView} ingredients={recipe.ingredients} ratios={recipe.ratios} colorOf={getIngredientCategoryColor} />
           )}
 
-          <form onSubmit={handleSubmit} style={{ 
-            marginTop: '30px', 
-            paddingTop: '20px', 
-            borderTop: `1px solid ${theme.tableBorder}`,
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'center'
-          }}>
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Paste another recipe URL here..."
-              style={{ 
-                flex: 1,
-                padding: '12px', 
-                backgroundColor: theme.inputBg,
-                color: theme.inputText,
-                border: `1px solid ${theme.tableBorder}`,
-                borderRadius: '6px'
-              }}
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ 
-                padding: '12px 20px', 
-                backgroundColor: theme.buttonBg, 
-                color: theme.buttonText, 
-                border: 'none', 
-                cursor: 'pointer',
-                borderRadius: '6px',
-                fontWeight: '600'
-              }}
-            >
-              {loading ? 'Processing...' : 'Extract Ratios'}
-            </button>
-          </form>
           
           {error && (
             <div style={{ 

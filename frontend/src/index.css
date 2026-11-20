@@ -186,9 +186,16 @@ button[type="submit"] { white-space: nowrap; }
 body[data-mode="day"] .intro-panel { background: rgba(255, 246, 232, .85); border-color: rgba(214, 84, 34, .3); }
 .intro-panel p { text-shadow: none !important; }
 
-/* title with the flip button; the back of the card lists the directions on the same index card */
-.title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.title-row h2 { min-width: 0; overflow-wrap: anywhere; }
+/* card title: one line in the button's display face, scrolling like a ticker; buttons on the row under it */
+.title-ticker { margin: 0 0 10px; overflow: hidden; white-space: nowrap; font: 400 26px/1.2 var(--display) !important; letter-spacing: .06em; text-transform: uppercase; color: var(--cream);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); mask: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.title-ticker .tt-track { display: inline-flex; gap: 3em; padding-left: 4%; animation: ticker 14s linear infinite; }
+.title-ticker .tt-track span { flex: none; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 1.5em)); } }
+@media (prefers-reduced-motion: reduce) { .title-ticker .tt-track { animation: none; } .title-ticker .tt-track span + span { display: none; } }
+body[data-mode="day"] .title-ticker { color: #3b1408; }
+.title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.orig-link { color: var(--pink); font-size: 14px; text-decoration: none; margin-right: auto; }
 .flip-btn { flex: none; padding: 8px 12px; border-radius: 10px; font: 400 15px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; }
 .flip-btn span { display: inline-block; margin-left: 4px; }
 .flip-btn[aria-pressed="true"] { background: rgba(28, 10, 46, .8); border: 1px solid var(--pink); box-shadow: none; }
@@ -197,7 +204,7 @@ body[data-mode="day"] .intro-panel { background: rgba(255, 246, 232, .85); borde
 @media (prefers-reduced-motion: reduce) { .cv-back { animation: none; } }
 .cv-back .back-h { text-align: center; font: 700 34px/32px "Caveat", cursive; color: #b8325e; margin-bottom: 8px; }
 .cv-back ol { margin: 0; padding: 0 0 0 26px; counter-reset: step; list-style: none; }
-.cv-back li { counter-increment: step; position: relative; padding-left: 30px; font: 500 20px/32px "Caveat", cursive; }
+.cv-back li { display: block; min-height: 0; counter-increment: step; position: relative; padding-left: 30px; font: 500 20px/32px "Caveat", cursive; }
 .cv-back li::before { content: counter(step); position: absolute; left: 0; font-weight: 700; color: #b8325e; }
 .cv-back .none { padding-left: 26px; font: 500 20px/32px "Caveat", cursive; }
 .cv-back a { color: #b8325e; }
@@ -209,7 +216,7 @@ body[data-mode="day"] .signed-in { background: rgba(255, 246, 232, .85); }
 .sign-out:hover { background: rgba(255, 61, 139, .15); }
 
 /* remove: a faint word beside the title, only for the person who saved the card */
-.remove-btn { flex: none; align-self: center; margin-left: auto; padding: 2px 4px; background: none; border: 0; box-shadow: none;
+.remove-btn { flex: none; align-self: center; padding: 2px 4px; background: none; border: 0; box-shadow: none;
   font: 500 11px var(--sans); letter-spacing: .04em; color: rgba(255, 244, 230, .35); text-decoration: underline dotted; }
 .remove-btn:hover { color: var(--pink); background: none; filter: none; box-shadow: none; }
 body[data-mode="day"] .remove-btn { color: rgba(59, 20, 8, .4); }
