@@ -801,14 +801,14 @@ useEffect(() => {
         {(user || SHOW_SIGNIN_BANNER) && (
         <div className={user ? "mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" : "mb-6 sm:mb-8"} style={user ? { backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` } : {}}>
           {user ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            <div key="signed-in" className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-4" style={{ minWidth: 0 }}>
                 {user.picture && (
                   <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
                 )}
-                <div>
-                  <h3 className="font-semibold" style={{ color: theme.textColor }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
-                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666' }}>({user.email})</p>
+                <div style={{ minWidth: 0 }}>
+                  <h3 className="font-semibold" style={{ color: theme.textColor, overflowWrap: 'anywhere' }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
+                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
                 </div>
               </div>
               <button
@@ -825,7 +825,7 @@ useEffect(() => {
               </button>
             </div>
           ) : (
-            <div className="text-center">
+            <div key="signed-out" className="text-center">
               <div id="google-sign-in-main" className="flex justify-center"></div>
             </div>
           )}
