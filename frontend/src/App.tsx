@@ -39,6 +39,9 @@ interface User {
   animal_handle?: string;
 }
 
+// The "Sign in to save your recipes" banner. Off until Google sign-in is set up again on this host.
+const SHOW_SIGNIN_BANNER = false;
+
 // Global Google types
 declare global {
   interface Window {
@@ -757,7 +760,8 @@ useEffect(() => {
           </p>
         </div>
 
-        {/* Login/User Section */}
+        {/* Login/User Section: the sign-in prompt is off (SHOW_SIGNIN_BANNER); a signed-in user still sees it */}
+        {(user || SHOW_SIGNIN_BANNER) && (
         <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
           {user ? (
             <div className="flex items-center justify-between">
@@ -790,6 +794,7 @@ useEffect(() => {
             </div>
           )}
         </div>
+        )}
 
         {/* Recent Recipes Section */}
         {user && savedRecipes.length > 0 && (
