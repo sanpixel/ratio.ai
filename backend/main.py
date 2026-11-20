@@ -72,6 +72,13 @@ def generate_animal_handle(email: str) -> str:
 
 app = FastAPI(title="ratio.ai API", version="1.0.0")
 
+# Accounts that may remove anyone's saved recipe. Comma-separated emails in the ADMIN_EMAILS
+# environment variable (set on Vercel, kept out of the repo).
+ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()}
+
+def is_admin(user: User) -> bool:
+    return bool(user and user.email and user.email.lower() in ADMIN_EMAILS)
+
 # Create database tables on startup
 @app.on_event("startup")
 async def startup_event():
@@ -243,7 +250,8 @@ async def get_user(user: User = Depends(get_current_user)):
         "name": user.name,
         "email": user.email,
         "picture": user.picture,
-        "animal_handle": generate_animal_handle(user.email)
+        "animal_handle": generate_animal_handle(user.email),
+        "is_admin": is_admin(user)
     }
 
 @app.get("/api/saved-recipes")
@@ -267,7 +275,7 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
             "instructions": recipe.instructions or [],
             "created_at": recipe.created_at,
             "user_handle": animal_handle,  # Send generated handle instead of email
-            "is_mine": recipe.user_id == user.id,
+            "is_mine": recipe.user_id == user.id or is_admin(user),
             "user_picture": recipe_user.picture
         }
         result.append(recipe_dict)
@@ -280,7 +288,7 @@ async def delete_saved_recipe(recipe_id: int, user: User = Depends(get_current_u
     recipe = db.query(SavedRecipe).filter(SavedRecipe.id == recipe_id).first()
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
-    if recipe.user_id != user.id:
+    if recipe.user_id != user.id and not is_admin(user):
         raise HTTPException(status_code=403, detail="Only the person who saved this recipe can remove it")
     db.delete(recipe)
     db.commit()

@@ -863,55 +863,6 @@ useEffect(() => {
         </div>
         )}
 
-        {/* Recent Recipes Section */}
-        {user && savedRecipes.length > 0 && (
-          <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🌍 Global Recent Recipes</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-              {savedRecipes.map((savedRecipe) => (
-                <button
-                  key={savedRecipe.id}
-                  onClick={() => {
-                    setRecipe({
-                      title: savedRecipe.title,
-                      url: savedRecipe.url,
-                      ingredients: savedRecipe.ingredients,
-                      ratios: savedRecipe.ratios,
-                      instructions: savedRecipe.instructions || [],
-                      savedId: savedRecipe.id,
-                      mine: !!savedRecipe.is_mine,
-                      success: true
-                    });
-                    setUrl(savedRecipe.url);
-                  }}
-                  className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
-                    color: theme.textColor,
-                    border: `1px solid ${theme.tableBorder}`
-                  }}
-                >
-                  {savedRecipe.user_picture && (
-                    <img 
-                      src={savedRecipe.user_picture} 
-                      alt="Profile" 
-                      className="w-6 h-6 rounded-full flex-shrink-0" 
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs mb-1" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
-                      {savedRecipe.user_handle || 'Unknown Chef'}
-                    </div>
-                    <div className="truncate">
-                      📋 {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Debug Section - Test Recipe Links */}
         <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
           <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
@@ -1174,6 +1125,55 @@ useEffect(() => {
         </>
         )}
         
+        {/* Recent Recipes Section */}
+        {user && savedRecipes.length > 0 && (
+          <div className="mt-8 mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>🌍 Global Recent Recipes</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+              {savedRecipes.map((savedRecipe) => (
+                <button
+                  key={savedRecipe.id}
+                  onClick={() => {
+                    setRecipe({
+                      title: savedRecipe.title,
+                      url: savedRecipe.url,
+                      ingredients: savedRecipe.ingredients,
+                      ratios: savedRecipe.ratios,
+                      instructions: savedRecipe.instructions || [],
+                      savedId: savedRecipe.id,
+                      mine: !!savedRecipe.is_mine,
+                      success: true
+                    });
+                    setUrl(savedRecipe.url);
+                  }}
+                  className="p-3 rounded-lg text-left transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: isDarkMode ? '#374151' : '#f3f4f6',
+                    color: theme.textColor,
+                    border: `1px solid ${theme.tableBorder}`
+                  }}
+                >
+                  {savedRecipe.user_picture && (
+                    <img 
+                      src={savedRecipe.user_picture} 
+                      alt="Profile" 
+                      className="w-6 h-6 rounded-full flex-shrink-0" 
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs mb-1" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
+                      {savedRecipe.user_handle || 'Unknown Chef'}
+                    </div>
+                    <div className="truncate">
+                      📋 {savedRecipe.title.length > 25 ? savedRecipe.title.substring(0, 25) + '...' : savedRecipe.title}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <div className="mt-16 pt-8 border-t" style={{ borderColor: theme.tableBorder }}>
           <div className="text-center text-sm" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
