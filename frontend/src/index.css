@@ -227,3 +227,11 @@ body[data-mode="day"] .remove-btn { color: rgba(59, 20, 8, .4); }
 .feed-item:hover { background: rgba(255, 140, 66, .22) !important; filter: none; }
 body[data-mode="day"] .feed-item { background: rgba(255, 255, 255, .45) !important; color: #3b1408 !important; }
 .cv-index { background-color: rgba(253, 246, 227, .9); border-top-color: rgba(253, 246, 227, .9); }
+
+/* small share button beside the Thanksgiving edition pill */
+.wm-badge { margin-right: 0; }
+.wm-share { order: 3; align-self: center; margin: 8px auto 0 6px; width: 26px; height: 26px; padding: 0; display: inline-grid; place-items: center; border-radius: 99px;
+  background: rgba(18, 6, 31, .78); color: var(--gold); border: 1px solid rgba(255, 200, 87, .45); box-shadow: none; }
+.wm-share:hover { color: #fff; border-color: var(--gold); filter: none; box-shadow: 0 0 12px rgba(255, 200, 87, .4); }
+.wordmark .wm-badge { margin-left: auto; margin-right: 0; }
+.share-note { font-size: 12px; color: var(--gold); margin-top: 4px; }

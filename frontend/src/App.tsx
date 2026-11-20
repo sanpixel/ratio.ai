@@ -77,6 +77,7 @@ function App() {
   });
   // the back of the card: directions
   const [flipped, setFlipped] = useState(false);
+  const [shareNote, setShareNote] = useState('');
   useEffect(() => { setFlipped(false); }, [recipe?.url]);
   const pickView = (n: number) => { setCardView(n); try { localStorage.setItem('card_view', String(n)); } catch (e) {} };
   
@@ -423,6 +424,20 @@ useEffect(() => {
     }
   };
 
+  // share the site: the phone's share sheet, or copy the link
+  const shareSite = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // the title toggles day/night; this button shouldn't
+    const data = { title: 'ratio.ai', text: 'Turn any recipe link into a card you can remember.', url: 'https://ratio.clocknumbers.com/' };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(data.url);
+      setShareNote('Link copied');
+    } catch (err) {
+      if ((err as any)?.name !== 'AbortError') setShareNote('ratio.clocknumbers.com');
+    }
+    setTimeout(() => setShareNote(''), 2500);
+  };
+
   // remove the card on screen from the saved list (only its owner sees the button)
   const removeSaved = async () => {
     const token = accessToken || localStorage.getItem('access_token');
@@ -554,6 +569,9 @@ useEffect(() => {
               >
                 <span className="wm-ratio">ratio</span><span className="wm-ai">.ai</span>
                 <span className="wm-badge">Thanksgiving edition</span>
+                <button type="button" className="wm-share" onClick={shareSite} title="Share ratio" aria-label="Share ratio">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/></svg>
+                </button>
               </h1>
               <p className="text-lg sm:text-xl text-gray-300 px-4">
                 Transform bloated recipes into clean, memorable ratios
@@ -793,7 +811,11 @@ useEffect(() => {
           >
             <span className="wm-ratio">ratio</span><span className="wm-ai">.ai</span>
                 <span className="wm-badge">Thanksgiving edition</span>
+                <button type="button" className="wm-share" onClick={shareSite} title="Share ratio" aria-label="Share ratio">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/></svg>
+                </button>
           </h1>
+          {shareNote && <div className="share-note" role="status">{shareNote}</div>}
           <div className="intro-panel">
           <p className="text-lg sm:text-xl mb-3" style={{color: theme.textColor}}>
             Distilling recipes webpages into essential ingredients and foundational ratios.
