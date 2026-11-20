@@ -102,4 +102,33 @@ code { font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", mon
 form { flex-wrap: wrap; }
 form input { min-width: 0; flex: 1 1 200px; }
 button[type="submit"] { white-space: nowrap; }
-@media (max-width: 600px) { #root [style*="padding: 32px"] { padding: 18px !important; } table { font-size: 13px; } }
+
+/* ---------- ingredient table: fixed columns, debug kept on the right ---------- */
+.ingr { table-layout: fixed; width: 100%; }
+.ingr th:nth-child(1), .ingr td:nth-child(1), .ingr th:nth-child(2), .ingr td:nth-child(2) { width: 64px; }
+.ingr th:nth-child(3), .ingr td:nth-child(3) { width: 72px; }
+.ingr th:nth-child(5), .ingr td:nth-child(5) { width: 34%; }
+.ingr th, .ingr td { padding: 6px 8px !important; vertical-align: middle; }
+.ingr td input { width: 100% !important; box-sizing: border-box; padding: 2px 0 !important; }
+.ingr td:nth-child(5) { max-width: none !important; word-break: break-word; }
+.ingr td:nth-child(5) div, .ingr td:nth-child(5) { font-size: 11px; line-height: 1.35; }
+
+/* ---------- phones: half the padding, each ingredient one tidy row ---------- */
+@media (max-width: 600px) {
+  .px-4 { padding-left: 8px !important; padding-right: 8px !important; }
+  .p-4 { padding: 8px !important; }
+  .py-6 { padding-top: 12px !important; padding-bottom: 12px !important; }
+  #root [style*="padding: 32px"] { padding: 9px !important; }
+  #root [style*="padding: 32px 0"] { padding: 16px 0 !important; }
+  .ingr, .ingr tbody { display: block; }
+  .ingr thead { display: none; }
+  .ingr tr { display: grid; grid-template-columns: 46px 46px 1fr 42%; grid-template-areas: "name name name debug" "qty unit grams debug";
+    gap: 0 6px; padding: 6px 4px; border-bottom: 1px solid rgba(255, 140, 66, .3); align-items: center; }
+  .ingr td { display: block !important; border: none !important; padding: 0 !important; width: auto !important; }
+  .ingr td:nth-child(1) { grid-area: qty; } .ingr td:nth-child(2) { grid-area: unit; } .ingr td:nth-child(3) { grid-area: grams; }
+  .ingr td:nth-child(4) { grid-area: name; } .ingr td:nth-child(4) input { font-size: 15px !important; }
+  .ingr td:nth-child(5) { grid-area: debug; align-self: stretch; padding-left: 8px !important; border-left: 1px solid rgba(255, 61, 139, .3) !important; color: #c9a6c0 !important; }
+  .ingr td:nth-child(5) .truncate { white-space: normal; }
+  .ingr td:nth-child(1) input, .ingr td:nth-child(2) input, .ingr td:nth-child(3) input { font-size: 13px !important; opacity: .85; }
+  .ingr td:nth-child(3)::after { content: none; }
+}

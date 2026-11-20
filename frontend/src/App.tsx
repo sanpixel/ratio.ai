@@ -624,7 +624,7 @@ useEffect(() => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse mb-6" style={{ backgroundColor: '#2D3748' }}>
+            <table className="ingr w-full border-collapse mb-6" style={{ backgroundColor: 'transparent' }}>
               <thead>
                 <tr className="bg-gray-700">
                   <th className="border border-gray-600 p-2 sm:p-3 text-left text-gray-200 text-sm font-semibold">Qty</th>
@@ -923,7 +923,7 @@ useEffect(() => {
             </a>
           </div>
 
-          <table style={{ 
+          <table className="ingr" style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
             marginBottom: '40px',
