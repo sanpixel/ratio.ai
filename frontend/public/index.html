@@ -3,7 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1f6fd1" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icons/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="ratio" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ratio.ai" />
+    <meta property="og:description" content="Turn a recipe link into a clean ratio." />
+    <meta property="og:url" content="https://ratio.clocknumbers.com/" />
+    <meta property="og:image" content="https://ratio.clocknumbers.com/icons/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="google-site-verification" content="71ktEyFFbvT-p5V5Ndtu_F8RTiL8tBk2V82kkUB0FxM" />
     <meta
       name="description"
@@ -15,5 +28,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });</script>
   </body>
 </html>

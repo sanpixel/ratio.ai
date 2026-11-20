@@ -254,6 +254,30 @@ useEffect(() => {
     handleExtensionRecipe();
   }, []);
 
+  // Handle links shared from a phone: Android's share sheet (web share target, /share?url=&text=&title=)
+  // and the iPhone Shortcut, which opens /share?url=<the page> without encoding it.
+  useEffect(() => {
+    const s = window.location.search;
+    if (!s) return;
+    let found: string | null = null;
+    const raw = s.match(/[?&]url=(https?:\/\/.*)$/);
+    if (raw) found = raw[1];
+    else {
+      const p = new URLSearchParams(s);
+      for (const k of ['url', 'text', 'title']) {
+        const m = (p.get(k) || '').match(/https?:\/\/[^\s]+/);
+        if (m) { found = m[0]; break; }
+      }
+    }
+    if (!found) return;
+    setIsInitialLoading(false);
+    setShowMainApp(true);
+    setUrl(found);
+    processRecipeFromUrl(found);
+    window.history.replaceState({}, document.title, '/');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleGoogleResponse = async (response: any) => {
     try {
       console.log('Google response received:', response.credential ? 'Token received' : 'No token');
@@ -1087,6 +1111,10 @@ useEffect(() => {
         <div className="mt-16 pt-8 border-t" style={{ borderColor: theme.tableBorder }}>
           <div className="text-center text-sm" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
             <p className="mb-2">
+              <a href="/phone.html" className="hover:underline" style={{ color: theme.buttonBg }}>
+                Send recipes from your phone
+              </a>
+              {" | "}
               <a 
                 href="/privacy-policy.html" 
                 target="_blank" 

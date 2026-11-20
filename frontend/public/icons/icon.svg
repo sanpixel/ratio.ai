@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <g fill="none" stroke="#1f6fd1" stroke-width="16">
+    <rect x="72" y="72" width="368" height="368"/>
+    <rect x="112" y="112" width="288" height="288"/>
+    <rect x="152" y="152" width="208" height="208"/>
+  </g>
+  <text x="256" y="280" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="64" fill="#1f6fd1">RATIO</text>
+</svg>

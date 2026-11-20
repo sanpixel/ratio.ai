@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ratio on your phone</title>
+<meta name="description" content="Send a recipe link to ratio from your phone's Share button, on Android or iPhone.">
+<meta name="theme-color" content="#1f6fd1">
+<link rel="icon" href="/icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="canonical" href="https://ratio.clocknumbers.com/phone.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ratio.ai">
+<meta property="og:title" content="Send recipes to ratio from your phone">
+<meta property="og:description" content="One-time setup so ratio shows up when you tap Share on a recipe.">
+<meta property="og:url" content="https://ratio.clocknumbers.com/phone.html">
+<meta property="og:image" content="https://ratio.clocknumbers.com/icons/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ratio.ai">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --bg:#ffffff; --ink:#15181c; --muted:#5d636b; --line:#dfe3e8; --card:#f5f7fa; --acc:#1f6fd1; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111418; --ink:#eef1f4; --muted:#9aa3ad; --line:#2a3038; --card:#1a1f25; --acc:#6aa8ff; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top)) 16px 48px; }
+  header { display: flex; align-items: center; gap: 10px; }
+  header img { width: 40px; height: 40px; border-radius: 9px; border: 1px solid var(--line); }
+  h1 { font-size: 24px; margin: 0; }
+  h2 { font-size: 19px; margin: 26px 0 8px; }
+  p, li { color: var(--muted); }
+  b, strong { color: var(--ink); }
+  ol { padding-left: 22px; margin: 0; display: grid; gap: 8px; }
+  .tabs { display: flex; gap: 8px; margin: 18px 0 4px; }
+  .tabs button { flex: 1; min-height: 44px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; font: 600 15px system-ui, sans-serif; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { border-color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 10px; }
+  code { font: 600 14px ui-monospace, Menlo, monospace; color: var(--ink); overflow-wrap: anywhere; }
+  .copy { display: flex; gap: 8px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+  .btn { min-height: 40px; padding: 0 14px; border: 0; border-radius: 10px; background: var(--acc); color: #fff; font: 600 15px system-ui, sans-serif; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  .btn.ghost { background: transparent; color: var(--acc); border: 1px solid var(--acc); }
+  [hidden] { display: none !important; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="/icons/icon-192.png" alt=""><h1>ratio on your phone</h1></header>
+  <p>Set this up once. After that, on any recipe page tap <b>Share</b>, pick <b>ratio</b>, and the recipe opens as a ratio.</p>
+
+  <div class="tabs" role="group" aria-label="Your phone">
+    <button type="button" data-os="iphone" aria-pressed="true">iPhone</button>
+    <button type="button" data-os="android" aria-pressed="false">Android</button>
+  </div>
+
+  <section id="iphone">
+    <h2>iPhone: make a Shortcut (about a minute)</h2>
+    <ol>
+      <li>Open the <b>Shortcuts</b> app and tap <b>+</b>.</li>
+      <li>Tap the name at the top, rename it <b>ratio</b>, then tap <b>Details</b> and turn on <b>Show in Share Sheet</b>. Tap <b>Done</b>.</li>
+      <li>A box appears: “Receive <b>Any</b> input from Share Sheet”. Tap <b>Any</b> and leave only <b>URLs</b> and <b>Safari web pages</b> ticked.</li>
+      <li>Tap <b>Search Actions</b>, find <b>Open URLs</b> and add it.</li>
+      <li>Tap its <b>URL</b> box, paste the address below, then tap <b>Shortcut Input</b> above the keyboard so it sits right after <code>url=</code>.
+        <div class="box"><code id="pre">https://ratio.clocknumbers.com/share?url=</code>
+          <div class="copy"><button type="button" class="btn" id="copy">Copy</button><span id="copied" hidden>Copied</span></div></div>
+      </li>
+      <li>Tap <b>Done</b>. Now in Safari, on a recipe, tap <b>Share</b> and choose <b>ratio</b>. The first time, iPhone asks to allow it to open the page: tap <b>Always Allow</b>.</li>
+    </ol>
+    <p>To also get ratio on your Home Screen: open <a href="/">ratio.clocknumbers.com</a> in Safari, tap <b>Share</b> (under <b>⋯</b> on iOS 26 and later), then <b>Add to Home Screen</b>.</p>
+  </section>
+
+  <section id="android" hidden>
+    <h2>Android: install the app (30 seconds)</h2>
+    <ol>
+      <li>Open <a href="/">ratio.clocknumbers.com</a> in <b>Chrome</b>.</li>
+      <li>Tap <b>⋮</b>, then <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.</li>
+      <li>On any recipe, in Chrome or another app, tap <b>Share</b> and choose <b>ratio</b>. It may be under <b>More</b> the first time.</li>
+    </ol>
+    <div class="row"><button type="button" class="btn" id="install" hidden>Install ratio</button></div>
+  </section>
+
+  <div class="row"><a class="btn ghost" href="/">Open ratio</a><button type="button" class="btn ghost" id="share">Send this page to someone</button></div>
+</div>
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  function show(os) {
+    document.querySelectorAll("[data-os]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.os === os)); });
+    $("#iphone").hidden = os !== "iphone"; $("#android").hidden = os !== "android";
+  }
+  if (/Android/i.test(navigator.userAgent)) show("android");
+  document.querySelectorAll("[data-os]").forEach(function (b) { b.addEventListener("click", function () { show(b.dataset.os); }); });
+  $("#copy").addEventListener("click", function () {
+    var t = $("#pre").textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { $("#copied").hidden = false; }, function () { prompt("Copy this", t); });
+  });
+  var evt = null;
+  addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); evt = e; $("#install").hidden = false; });
+  $("#install").addEventListener("click", function () { if (evt) { evt.prompt(); evt = null; $("#install").hidden = true; } });
+  $("#share").addEventListener("click", function () {
+    var url = "https://ratio.clocknumbers.com/phone.html", text = "Set up ratio so you can send it recipes from your phone's Share button.";
+    if (navigator.share) { navigator.share({ title: "ratio on your phone", text: text, url: url }).catch(function () {}); return; }
+    location.href = "sms:?&body=" + encodeURIComponent(text + " " + url);
+  });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(function () {});
+})();
+</script>
+</body>
+</html>
