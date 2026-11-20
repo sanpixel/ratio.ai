@@ -17,6 +17,7 @@ interface Recipe {
   url: string;
   ingredients: Ingredient[];
   ratios: any;
+  instructions?: string[];
   success: boolean;
   error?: string;
 }
@@ -27,6 +28,7 @@ interface SavedRecipe {
   url: string;
   ingredients: Ingredient[];
   ratios: any;
+  instructions?: string[];
   created_at: string;
   user_handle?: string;
   user_picture?: string;
@@ -42,6 +44,10 @@ interface User {
 
 // The "Sign in to save your recipes" banner.
 const SHOW_SIGNIN_BANNER = true;
+
+// The 1-5 card layout picker. Off: every card shows as the index card (layout 2).
+const SHOW_CARD_PICKER = false;
+const DEFAULT_CARD_VIEW = 2;
 
 // The intro video (public/loading-animation.gif) that plays for 7 s before the site. Kept, but off.
 const SHOW_INTRO_ANIMATION = false;
@@ -63,8 +69,12 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   // which card layout to show (1 = the editable table, 2-5 = the sketches in CardViews.tsx)
   const [cardView, setCardView] = useState<number>(() => {
-    try { return Number(localStorage.getItem('card_view')) || 1; } catch (e) { return 1; }
+    if (!SHOW_CARD_PICKER) return DEFAULT_CARD_VIEW;
+    try { return Number(localStorage.getItem('card_view')) || DEFAULT_CARD_VIEW; } catch (e) { return DEFAULT_CARD_VIEW; }
   });
+  // the back of the card: directions
+  const [flipped, setFlipped] = useState(false);
+  useEffect(() => { setFlipped(false); }, [recipe?.url]);
   const pickView = (n: number) => { setCardView(n); try { localStorage.setItem('card_view', String(n)); } catch (e) {} };
   
   // Authentication state
@@ -577,6 +587,7 @@ useEffect(() => {
                       url: savedRecipe.url,
                       ingredients: savedRecipe.ingredients,
                       ratios: savedRecipe.ratios,
+                      instructions: savedRecipe.instructions || [],
                       success: true
                     });
                     setUrl(savedRecipe.url);
@@ -799,16 +810,16 @@ useEffect(() => {
 
         {/* Login/User Section: the sign-in prompt is off (SHOW_SIGNIN_BANNER); a signed-in user still sees it */}
         {(user || SHOW_SIGNIN_BANNER) && (
-        <div className={user ? "mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" : "mb-6 sm:mb-8"} style={user ? { backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` } : {}}>
+        <div className={user ? "signed-in mb-6 sm:mb-8 rounded-lg" : "mb-6 sm:mb-8"} style={user ? { backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` } : {}}>
           {user ? (
-            <div key="signed-in" className="flex items-center justify-between gap-3 flex-wrap">
-              <div className="flex items-center gap-4" style={{ minWidth: 0 }}>
+            <div key="signed-in" className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2" style={{ minWidth: 0 }}>
                 {user.picture && (
-                  <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
+                  <img src={user.picture} alt="" className="w-7 h-7 rounded-full" style={{ flex: 'none' }} />
                 )}
                 <div style={{ minWidth: 0 }}>
-                  <h3 className="font-semibold" style={{ color: theme.textColor, overflowWrap: 'anywhere' }}>{getRandomGreeting(user.animal_handle || 'Chef')}</h3>
-                  <p className="text-sm" style={{ color: isDarkMode ? '#aaa' : '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
+                  <div className="text-sm font-semibold" style={{ color: theme.textColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRandomGreeting(user.animal_handle || 'Chef')}</div>
+                  <div className="text-xs" style={{ color: isDarkMode ? '#aaa' : '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
                 </div>
               </div>
               <button
@@ -818,10 +829,9 @@ useEffect(() => {
                   setUser(null);
                   setSavedRecipes([]);
                 }}
-                className="px-4 py-2 rounded-lg font-semibold transition-all"
-                style={{ backgroundColor: theme.buttonBg, color: theme.buttonText }}
+                className="sign-out"
               >
-                Sign Out
+                Sign out
               </button>
             </div>
           ) : (
@@ -846,6 +856,7 @@ useEffect(() => {
                       url: savedRecipe.url,
                       ingredients: savedRecipe.ingredients,
                       ratios: savedRecipe.ratios,
+                      instructions: savedRecipe.instructions || [],
                       success: true
                     });
                     setUrl(savedRecipe.url);
@@ -906,6 +917,7 @@ useEffect(() => {
 
         {recipe && recipe.success && (
         <>
+        {SHOW_CARD_PICKER && (
         <div className="view-strip" role="group" aria-label="Card layout">
           {[1, 2, 3, 4, 5].map((n) => (
             <button key={n} type="button" aria-pressed={cardView === n} onClick={() => pickView(n)}
@@ -913,13 +925,15 @@ useEffect(() => {
           ))}
           <span>{['Table', 'Index card', 'Weight bar', 'Receipt', 'Tiles'][cardView - 1]}</span>
         </div>
+        )}
         <div style={{ 
           backgroundColor: theme.cardBg, 
           border: `1px solid ${theme.cardBorder}`, 
           padding: '32px',
           marginTop: '24px'
         }}>
-          <div style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <div className="title-row">
             <h2 style={{ 
               color: theme.textColor, 
               marginBottom: '12px', 
@@ -927,6 +941,10 @@ useEffect(() => {
               fontWeight: '700',
               letterSpacing: '-0.02em'
             }}>{recipe.title}</h2>
+            <button type="button" className="flip-btn" aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
+              {flipped ? 'Ingredients' : 'Directions'} <span aria-hidden="true">↻</span>
+            </button>
+            </div>
             <a href={recipe.url} target="_blank" rel="noopener noreferrer" style={{ 
               color: theme.buttonBg, 
               textDecoration: 'none',
@@ -936,7 +954,16 @@ useEffect(() => {
             </a>
           </div>
 
-          {cardView === 1 ? (<>
+          {flipped ? (
+            <div className="cv cv-index cv-back">
+              <div className="back-h">Directions</div>
+              {recipe.instructions && recipe.instructions.length ? (
+                <ol>{recipe.instructions.map((s, k) => <li key={k}>{s}</li>)}</ol>
+              ) : (
+                <p className="none">No directions came with this card. They're on the <a href={recipe.url} target="_blank" rel="noopener noreferrer">original recipe</a>.</p>
+              )}
+            </div>
+          ) : cardView === 1 ? (<>
           <table className="ingr" style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 

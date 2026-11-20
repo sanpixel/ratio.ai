@@ -29,6 +29,7 @@ class SavedRecipe(Base):
     url = Column(String, nullable=False)
     ingredients = Column(JSON, nullable=False)  # Store the full ingredients array
     ratios = Column(JSON, nullable=False)  # Store the calculated ratios
+    instructions = Column(JSON, nullable=True)  # Directions, one string per step
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

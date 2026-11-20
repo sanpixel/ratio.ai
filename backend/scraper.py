@@ -46,44 +46,37 @@ class RecipeScraper:
     def _extract_json_ld(self, soup: BeautifulSoup) -> Optional[Dict]:
         """
         Extract recipe data from JSON-LD structured data.
-        Most modern recipe sites use this format.
+        Looks through every block, arrays and @graph included, for a node whose @type
+        (a string or a list) includes Recipe. One bad block no longer stops the search.
         """
-        try:
-            # Find all JSON-LD scripts
-            json_scripts = soup.find_all('script', type='application/ld+json')
-            
-            for script in json_scripts:
+        def nodes(x):
+            if isinstance(x, list):
+                for y in x:
+                    yield from nodes(y)
+            elif isinstance(x, dict):
+                yield x
+                if '@graph' in x:
+                    yield from nodes(x['@graph'])
+
+        for script in soup.find_all('script', type='application/ld+json'):
+            try:
+                data = json.loads(script.string or script.get_text() or '')
+            except (json.JSONDecodeError, TypeError):
+                continue
+            for node in nodes(data):
                 try:
-                    data = json.loads(script.string)
-                    
-                    # Handle both single objects and arrays
-                    if isinstance(data, list):
-                        data = data[0]
-                    
-                    # Look for Recipe schema
-                    if self._is_recipe_schema(data):
-                        return self._parse_recipe_schema(data)
-                    
-                    # Sometimes recipe is nested in other schema
-                    if '@graph' in data:
-                        for item in data['@graph']:
-                            if self._is_recipe_schema(item):
-                                return self._parse_recipe_schema(item)
-                                
-                except json.JSONDecodeError:
-                    continue
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Error extracting JSON-LD: {str(e)}")
-            return None
-    
+                    if self._is_recipe_schema(node) and node.get('recipeIngredient'):
+                        return self._parse_recipe_schema(node)
+                except Exception as e:
+                    logger.error(f"Error reading a JSON-LD recipe node: {str(e)}")
+        return None
+
     def _is_recipe_schema(self, data: Dict) -> bool:
-        """Check if data contains Recipe schema."""
-        schema_type = data.get('@type', '').lower()
-        return 'recipe' in schema_type
-    
+        """Check if data contains Recipe schema; @type may be a string or a list."""
+        t = data.get('@type', '')
+        types = t if isinstance(t, list) else [t]
+        return any(isinstance(x, str) and x.lower() == 'recipe' for x in types)
+
     def _parse_recipe_schema(self, data: Dict) -> Dict:
         """Parse Recipe schema data into our format."""
         # Extract title
@@ -122,12 +115,14 @@ class RecipeScraper:
         instructions = []
         recipe_instructions = data.get('recipeInstructions', [])
         
+        if isinstance(recipe_instructions, str):
+            recipe_instructions = [recipe_instructions]
         for instruction in recipe_instructions:
             if isinstance(instruction, str):
                 instructions.append(instruction.strip())
             elif isinstance(instruction, dict):
-                text = instruction.get('text', str(instruction))
-                instructions.append(text.strip())
+                # keep sections whole (HowToSection holds its steps in itemListElement); main.py flattens them
+                instructions.append(instruction)
                 
         # If we detected sections, return them; otherwise return as single section
         if ingredient_sections and len(ingredient_sections) > 1:

@@ -120,6 +120,27 @@ else:
     async def root():
         return {"message": "Welcome to ratio.ai API - React build not found"}
 
+def flatten_steps(raw) -> List[str]:
+    """Directions as plain steps. JSON-LD gives strings, HowToStep objects, or HowToSection
+    objects holding more steps (itemListElement); the scraper may have kept those as text."""
+    out: List[str] = []
+    def walk(x):
+        if isinstance(x, str):
+            t = re.sub(r"<[^>]+>", " ", x)
+            t = re.sub(r"\s+", " ", t).strip()
+            if t:
+                out.append(t)
+        elif isinstance(x, dict):
+            if x.get("itemListElement"):
+                walk(x["itemListElement"])
+            else:
+                walk(x.get("text") or x.get("name") or "")
+        elif isinstance(x, list):
+            for y in x:
+                walk(y)
+    walk(raw)
+    return out[:40]
+
 class RecipeRequest(BaseModel):
     url: HttpUrl
 
@@ -136,6 +157,7 @@ class RecipeResponse(BaseModel):
     url: str
     ingredients: List[IngredientData]
     ratios: Dict[str, Any]
+    instructions: List[str] = []
     success: bool
     error: str = None
 
@@ -200,7 +222,8 @@ async def save_recipe(
             title=title,
             url=url,
             ingredients=ingredients_data,
-            ratios=ratios
+            ratios=ratios,
+            instructions=recipe.get('instructions') or None
         )
         db.add(saved_recipe)
         db.commit()
@@ -241,6 +264,7 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
             "url": recipe.url,
             "ingredients": recipe.ingredients,
             "ratios": recipe.ratios,
+            "instructions": recipe.instructions or [],
             "created_at": recipe.created_at,
             "user_handle": animal_handle,  # Send generated handle instead of email
             "user_picture": recipe_user.picture
@@ -303,6 +327,7 @@ async def process_recipe(request: RecipeRequest):
             url=str(request.url),
             ingredients=ingredients_data,
             ratios=ratios,
+            instructions=flatten_steps(recipe_data.get("instructions", [])),
             success=True
         )
         

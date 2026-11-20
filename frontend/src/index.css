@@ -185,3 +185,25 @@ button[type="submit"] { white-space: nowrap; }
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 61, 139, .25); }
 body[data-mode="day"] .intro-panel { background: rgba(255, 246, 232, .85); border-color: rgba(214, 84, 34, .3); }
 .intro-panel p { text-shadow: none !important; }
+
+/* title with the flip button; the back of the card lists the directions on the same index card */
+.title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.title-row h2 { min-width: 0; overflow-wrap: anywhere; }
+.flip-btn { flex: none; padding: 8px 12px; border-radius: 10px; font: 400 15px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.flip-btn span { display: inline-block; margin-left: 4px; }
+.flip-btn[aria-pressed="true"] { background: rgba(28, 10, 46, .8); border: 1px solid var(--pink); box-shadow: none; }
+.cv-back { animation: flipIn .35s ease; }
+@keyframes flipIn { from { transform: perspective(900px) rotateY(-80deg); opacity: .2; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .cv-back { animation: none; } }
+.cv-back .back-h { text-align: center; font: 700 34px/32px "Caveat", cursive; color: #b8325e; margin-bottom: 8px; }
+.cv-back ol { margin: 0; padding: 0 0 0 26px; counter-reset: step; list-style: none; }
+.cv-back li { counter-increment: step; position: relative; padding-left: 30px; font: 500 20px/32px "Caveat", cursive; }
+.cv-back li::before { content: counter(step); position: absolute; left: 0; font-weight: 700; color: #b8325e; }
+.cv-back .none { padding-left: 26px; font: 500 20px/32px "Caveat", cursive; }
+.cv-back a { color: #b8325e; }
+
+/* signed-in strip: one compact line, small sign-out */
+.signed-in { padding: 8px 10px; background: rgba(28, 10, 46, .72); border: 1px solid rgba(255, 61, 139, .3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+body[data-mode="day"] .signed-in { background: rgba(255, 246, 232, .85); }
+.sign-out { flex: none; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 8px; background: transparent; border: 1px solid var(--pink); color: var(--pink); box-shadow: none; }
+.sign-out:hover { background: rgba(255, 61, 139, .15); }
