@@ -202,8 +202,9 @@ useEffect(() => {
           callback: handleGoogleResponse
         });
 
-        // Initial render after loading screen completes
-        setTimeout(renderGoogleSignInButton, 7000);
+        // Render the button now; retry briefly in case the page isn't drawn yet
+        renderGoogleSignInButton();
+        setTimeout(renderGoogleSignInButton, 300);
       } catch (error) {
         console.error('Google Sign-In initialization error:', error);
       }
@@ -761,17 +762,44 @@ useEffect(() => {
             <span className="wm-ratio">ratio</span><span className="wm-ai">.ai</span>
                 <span className="wm-badge">Thanksgiving edition</span>
           </h1>
-          <p className="text-lg sm:text-xl px-4 mb-4" style={{color: isDarkMode ? '#d1d5db' : '#6b7280'}}>
+          <div className="intro-panel">
+          <p className="text-lg sm:text-xl mb-3" style={{color: theme.textColor}}>
             Distilling recipes webpages into essential ingredients and foundational ratios.
           </p>
-          <p className="text-xs sm:text-sm px-4 max-w-3xl mx-auto leading-relaxed" style={{color: isDarkMode ? '#9ca3af' : '#6b7280'}}>
+          <p className="text-xs sm:text-sm max-w-3xl mx-auto leading-relaxed" style={{color: isDarkMode ? '#e8d6e3' : '#5a2a14'}}>
             Hoping to make recipes easy to remember so you don't have to keep going back to websites or YouTube — just pop by here instead. With thousands of recipes scattered across the internet, keep yours collected and shareable in one place, with a direct link to the original — kind of like Goodreads, but for cooking.
           </p>
+          </div>
         </div>
+
+        {/* URL Input Form - Only show when no recipe */}
+        {!recipe && (
+          <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Paste recipe URL here..."
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent text-gray-200 placeholder-gray-400"
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                style={{}}
+              >
+                {loading ? 'Processing...' : 'Extract Ratios'}
+              </button>
+            </div>
+          </form>
+        )}
+        
 
         {/* Login/User Section: the sign-in prompt is off (SHOW_SIGNIN_BANNER); a signed-in user still sees it */}
         {(user || SHOW_SIGNIN_BANNER) && (
-        <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` }}>
+        <div className={user ? "mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg shadow-lg" : "mb-6 sm:mb-8"} style={user ? { backgroundColor: theme.cardBg, border: `1px solid ${theme.cardBorder}` } : {}}>
           {user ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -798,7 +826,6 @@ useEffect(() => {
             </div>
           ) : (
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-4" style={{ color: theme.textColor }}>Sign in to save your recipes</h3>
               <div id="google-sign-in-main" className="flex justify-center"></div>
             </div>
           )}
@@ -854,19 +881,7 @@ useEffect(() => {
         {/* Debug Section - Test Recipe Links */}
         <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
           <h3 className="text-lg font-semibold text-gray-200 mb-4">🐛 Test Recipe Links</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
-            <button
-              onClick={() => setUrl('https://www.recipetineats.com/corn-ribs/')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
-            >
-              🌽 Corn Ribs
-            </button>
-            <button
-              onClick={() => setUrl('https://feelgoodfoodie.net/recipe/skinny-broccoli-shrimp-pasta-alfredo/#wprm-recipe-container-5888')}
-              className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
-            >
-              🍤 Broccoli Shrimp Alfredo
-            </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <button
               onClick={() => setUrl('https://www.loveandlemons.com/focaccia/')}
               className="p-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg text-left transition-colors border border-gray-600"
@@ -882,30 +897,6 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* URL Input Form - Only show when no recipe */}
-        {!recipe && (
-          <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <input
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste recipe URL here..."
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-transparent text-gray-200 placeholder-gray-400"
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 sm:px-8 py-3 text-gray-900 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                style={{}}
-              >
-                {loading ? 'Processing...' : 'Extract Ratios'}
-              </button>
-            </div>
-          </form>
-        )}
-        
         {/* Error Display */}
         {error && (
           <div className="mb-6 sm:mb-8 p-4 bg-red-900 border border-red-600 text-red-200 rounded-lg">
