@@ -16,6 +16,7 @@ interface Props {
   ingredients: CardIngredient[];
   ratios: any;
   colorOf: (name: string) => string;
+  notes?: React.ReactNode;
 }
 
 const KEY = ['flour', 'pasta', 'bread', 'cornstarch', 'water', 'milk', 'cream', 'stock', 'broth', 'egg', 'butter', 'oil', 'lard', 'shortening', 'sugar', 'honey', 'syrup'];
@@ -43,7 +44,7 @@ function RatioLine({ ratios, big }: { ratios: any; big?: boolean }) {
   );
 }
 
-export default function CardView({ view, ingredients, ratios, colorOf }: Props) {
+export default function CardView({ view, ingredients, ratios, colorOf, notes }: Props) {
   const key = ingredients.filter((i) => isKey(i.name));
   const rest = ingredients.filter((i) => !isKey(i.name));
   const total = ingredients.reduce((s, i) => s + (i.grams > 0 ? i.grams : 0), 0);
@@ -62,6 +63,7 @@ export default function CardView({ view, ingredients, ratios, colorOf }: Props) 
             </li>
           ))}
         </ul>
+        {notes}
       </div>
     );
   }

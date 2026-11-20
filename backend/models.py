@@ -20,6 +20,14 @@ class User(Base):
     # Relationship to saved recipes
     saved_recipes = relationship("SavedRecipe", back_populates="user", cascade="all, delete-orphan")
 
+class RecipeNote(Base):
+    """Shared notes written on a recipe's card. One per recipe page, no owner: anyone can edit."""
+    __tablename__ = "recipe_notes"
+
+    url = Column(String, primary_key=True)
+    notes = Column(Text, nullable=False, default='')
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 class SavedRecipe(Base):
     __tablename__ = "saved_recipes"
     

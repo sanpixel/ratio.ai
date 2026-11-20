@@ -62,6 +62,16 @@ declare global {
   }
 }
 
+// Notes written straight onto the card. Shared by everyone, saved as you type.
+function CardNotes({ value, state, onChange }: { value: string; state: string; onChange: (v: string) => void }) {
+  return (
+    <div className="card-notes">
+      <label htmlFor="card-notes">Notes <small>{state === 'saving' ? 'saving…' : state === 'saved' ? 'saved for everyone' : state === 'error' ? "couldn't save, keep typing to retry" : 'anyone can add or change these'}</small></label>
+      <textarea id="card-notes" value={value} maxLength={4000} rows={3} placeholder="Used less sugar, doubled the garlic, Mom's tip…" onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
 function App() {
   const [url, setUrl] = useState('');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -78,6 +88,25 @@ function App() {
   // the back of the card: directions
   const [flipped, setFlipped] = useState(false);
   const [shareNote, setShareNote] = useState('');
+  // shared notes on the card: one per recipe page, anyone can change them
+  const [notes, setNotes] = useState('');
+  const [notesState, setNotesState] = useState<'' | 'saving' | 'saved' | 'error'>('');
+  const notesTimer = React.useRef<any>(null);
+  useEffect(() => {
+    setNotes(''); setNotesState('');
+    if (!recipe?.url) return;
+    let live = true;
+    axios.get('/api/notes', { params: { url: recipe.url } }).then((r) => { if (live) setNotes(r.data.notes || ''); }).catch(() => {});
+    return () => { live = false; };
+  }, [recipe?.url]);
+  const onNotes = (value: string) => {
+    setNotes(value); setNotesState('saving');
+    clearTimeout(notesTimer.current);
+    const u = recipe?.url;
+    notesTimer.current = setTimeout(() => {
+      axios.put('/api/notes', { url: u, notes: value }).then(() => setNotesState('saved')).catch(() => setNotesState('error'));
+    }, 800);
+  };
   useEffect(() => { setFlipped(false); }, [recipe?.url]);
   const pickView = (n: number) => { setCardView(n); try { localStorage.setItem('card_view', String(n)); } catch (e) {} };
   
@@ -951,6 +980,7 @@ useEffect(() => {
               ) : (
                 <p className="none">No directions came with this card. They're on the <a href={recipe.url} target="_blank" rel="noopener noreferrer">original recipe</a>.</p>
               )}
+              <CardNotes value={notes} state={notesState} onChange={onNotes} />
             </div>
           ) : cardView === 1 ? (<>
           <table className="ingr" style={{ 
@@ -1078,7 +1108,8 @@ useEffect(() => {
           )}
 
           </>) : (
-            <CardView view={cardView} ingredients={recipe.ingredients} ratios={recipe.ratios} colorOf={getIngredientCategoryColor} />
+            <CardView view={cardView} ingredients={recipe.ingredients} ratios={recipe.ratios} colorOf={getIngredientCategoryColor}
+              notes={<CardNotes value={notes} state={notesState} onChange={onNotes} />} />
           )}
 
           

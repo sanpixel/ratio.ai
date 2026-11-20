@@ -14,7 +14,7 @@ from scraper import RecipeScraper
 from parser import RecipeParser
 from ratios import RatioCalculator
 from database import get_db, create_tables
-from models import User, SavedRecipe
+from models import User, SavedRecipe, RecipeNote
 from auth import verify_google_token, create_access_token, get_current_user
 import hashlib
 import random
@@ -281,6 +281,37 @@ async def get_saved_recipes(user: User = Depends(get_current_user), db: Session 
         result.append(recipe_dict)
     
     return result
+
+# ---------- shared card notes: one per recipe page, anyone can read or change them ----------
+NOTES_MAX = 4000
+
+def note_key(url: str) -> str:
+    u = (url or "").strip().split("#")[0]
+    return u.rstrip("/")[:1000]
+
+class NoteRequest(BaseModel):
+    url: str
+    notes: str
+
+@app.get("/api/notes")
+async def get_notes(url: str, db: Session = Depends(get_db)):
+    row = db.query(RecipeNote).filter(RecipeNote.url == note_key(url)).first()
+    return {"notes": row.notes if row else "", "updated_at": row.updated_at if row else None}
+
+@app.put("/api/notes")
+async def put_notes(request: NoteRequest, db: Session = Depends(get_db)):
+    key = note_key(request.url)
+    if not key.startswith("http"):
+        raise HTTPException(status_code=400, detail="Notes need the recipe's web address")
+    text = request.notes[:NOTES_MAX]
+    row = db.query(RecipeNote).filter(RecipeNote.url == key).first()
+    if row:
+        row.notes = text
+    else:
+        row = RecipeNote(url=key, notes=text)
+        db.add(row)
+    db.commit()
+    return {"saved": True, "notes": text}
 
 @app.delete("/api/saved-recipes/{recipe_id}")
 async def delete_saved_recipe(recipe_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):

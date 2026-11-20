@@ -235,3 +235,12 @@ body[data-mode="day"] .feed-item { background: rgba(255, 255, 255, .45) !importa
 .wm-share:hover { color: #fff; border-color: var(--gold); filter: none; box-shadow: 0 0 12px rgba(255, 200, 87, .4); }
 .wordmark .wm-badge { margin-left: auto; margin-right: 0; }
 .share-note { font-size: 12px; color: var(--gold); margin-top: 4px; }
+
+/* notes written on the bottom of the index card, on the ruled lines */
+.card-notes { margin-top: 10px; padding-left: 26px; }
+.card-notes label { display: flex; align-items: baseline; gap: 8px; font: 700 26px/32px "Caveat", cursive; color: #b8325e; }
+.card-notes label small { font: 500 11px var(--sans); color: #8a7560; }
+.card-notes textarea { width: 100%; min-height: 96px; resize: vertical; border: 0; outline: none; background: transparent; color: #1f3a8a;
+  font: 500 21px/32px "Caveat", cursive; padding: 0; background-image: linear-gradient(transparent 31px, rgba(80,120,200,.35) 32px); background-size: 100% 32px; }
+.card-notes textarea:focus { box-shadow: none !important; background-color: rgba(255, 200, 87, .12); }
+.card-notes textarea::placeholder { color: #a99880; }
