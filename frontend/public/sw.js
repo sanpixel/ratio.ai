@@ -1,6 +1,6 @@
 // ratio.ai: makes the site installable on Android so it shows in the share sheet (manifest share_target).
 // Pages load from the network first and fall back to the last copy; the API and everything else pass through.
-var CACHE = "ratio-v1";
+var CACHE = "ratio-v2";
 self.addEventListener("install", function () { self.skipWaiting(); });
 self.addEventListener("activate", function (e) { e.waitUntil(self.clients.claim()); });
 self.addEventListener("fetch", function (e) {
