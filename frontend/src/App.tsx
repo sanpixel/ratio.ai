@@ -72,6 +72,15 @@ function CardNotes({ value, state, onChange }: { value: string; state: string; o
   );
 }
 
+// The API's error as one line of text. FastAPI sends a list of objects when the request itself is
+// invalid (e.g. a link with spaces in it); putting that list on the page blanked the whole app.
+function errorText(err: any, fallback: string): string {
+  const d = err?.response?.data?.detail;
+  if (typeof d === 'string') return d;
+  if (Array.isArray(d)) return 'That link doesn\'t look like a web address: ' + d.map((x: any) => x?.msg || '').filter(Boolean).join('; ');
+  return fallback;
+}
+
 function App() {
   const [url, setUrl] = useState('');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -407,7 +416,10 @@ useEffect(() => {
   };
 
   // Process recipe from URL (shared function for form submission and extension)
-  const processRecipeFromUrl = async (recipeUrl: string, expectedTitle?: string) => {
+  const processRecipeFromUrl = async (rawUrl: string, expectedTitle?: string) => {
+    // links pasted from a phone often carry spaces or line breaks inside them
+    const recipeUrl = rawUrl.replace(/\s+/g, '');
+    if (recipeUrl !== rawUrl) setUrl(recipeUrl);
     setLoading(true);
     setError('');
     setRecipe(null);
@@ -449,7 +461,7 @@ useEffect(() => {
       }
     } catch (err: any) {
       console.error('Error processing recipe:', err);
-      setError(err.response?.data?.detail || 'Error processing recipe');
+      setError(errorText(err, 'Error processing recipe'));
     } finally {
       setLoading(false);
     }
@@ -480,7 +492,7 @@ useEffect(() => {
       setUrl('');
       loadSavedRecipes(token);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Could not remove that recipe');
+      setError(errorText(err, 'Could not remove that recipe'));
     }
   };
 

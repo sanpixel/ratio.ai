@@ -51,7 +51,7 @@ class RecipeParser:
             # Regular single measurement parsing
             # Match quantities including mixed numbers like "1 1/2" or "8" or "1/2"
             quantity_match = re.search(r'(\d+\s+\d+/\d+|\d+/\d+|\d*\.?\d+)', cleaned_text)
-            unit_match = re.search(r'\b(tablespoons?|tbsp|teaspoons?|tsp|cups?|grams?|g\b|ounces?|oz|pounds?|lb|lbs?|millilitres?|ml|litres?|l\b|head|cloves?|package)', cleaned_text, re.IGNORECASE)
+            unit_match = re.search(r'\b(tablespoons?|tbsp|teaspoons?|tsp|cups?|c(?=\.)|grams?|g\b|ounces?|oz|pounds?|lbs?|lb|millilitres?|ml|litres?|l\b|head|cloves?|package)', cleaned_text, re.IGNORECASE)
             
             quantity_str = quantity_match.group() if quantity_match else None
             unit = unit_match.group() if unit_match else ''
@@ -77,7 +77,7 @@ class RecipeParser:
             name_match = re.search(name_pattern, cleaned_text, re.IGNORECASE)
         else:
             # Regular pattern for single measurements - use cleaned text
-            pattern = r'^(?:\d+\s+\d+/\d+|\d+/\d+|\d*\.?\d+)?\s*(?:tablespoons?|tbsp|teaspoons?|tsp|cups?|grams?|g\b|ounces?|oz|pounds?|lb|lbs?|millilitres?|ml|litres?|l\b|head|cloves?|package)?\s*(.*)'
+            pattern = r'^(?:\d+\s+\d+/\d+|\d+/\d+|\d*\.?\d+)?\s*(?:(?:tablespoons?|tbsp|teaspoons?|tsp|cups?|c(?=\.)|grams?|g\b|ounces?|oz|pounds?|lbs?|lb|millilitres?|ml|litres?|l\b|head|cloves?|package)\.?)?\s*(.*)'
             name_match = re.search(pattern, cleaned_text, re.IGNORECASE)
         
         raw_name = name_match.group(1).strip() if name_match and name_match.group(1) else ingredient_text
@@ -97,6 +97,8 @@ class RecipeParser:
             unit = 'tbls'
         elif unit.lower() in ['teaspoons', 'teaspoon', 'tsp']:
             unit = 'tsps'
+        elif unit.lower() == 'c':
+            unit = 'cup'
 
         return {
             'name': normalized_name,

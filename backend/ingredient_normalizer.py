@@ -42,7 +42,16 @@ COMPOUND_INGREDIENTS = {
     'fresh rosemary': 'rosemary',
     'chopped fresh rosemary': 'rosemary',
     'italian seasoning': 'seasoning',
-    'vanilla extract': 'vanilla'
+    'vanilla extract': 'vanilla',
+    'heavy cream': 'cream',
+    'heavy whipping cream': 'cream',
+    'whipping cream': 'cream',
+    'sweet potatoes': 'sweet potato',
+    'sweet potato': 'sweet potato',
+    'mini marshmallows': 'marshmallows',
+    'marshmallows': 'marshmallows',
+    'pecans': 'pecans',
+    'coconut milk': 'coconut milk'
 }
 
 # Simple single-word ingredients
