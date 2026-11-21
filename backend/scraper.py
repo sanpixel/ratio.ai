@@ -13,6 +13,8 @@ class RecipeScraper:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
+        # Why the last scrape failed, in plain words, for the person to see.
+        self.last_error = ''
     
     def scrape_recipe(self, url: str) -> Optional[Dict]:
         """
@@ -21,8 +23,13 @@ class RecipeScraper:
         """
         try:
             logger.info(f"Scraping recipe from: {url}")
+            self.last_error = ''
             response = self.session.get(url, timeout=10)
-            response.raise_for_status()
+            if response.status_code != 200:
+                blocked = response.headers.get('cf-mitigated') == 'challenge'
+                self.last_error = (f"The site refused the request (HTTP {response.status_code}"
+                                   + (", a Cloudflare bot check" if blocked else "") + ").")
+                return None
             
             soup = BeautifulSoup(response.content, 'html.parser')
             
@@ -37,10 +44,12 @@ class RecipeScraper:
                 return recipe_data
             
             logger.warning(f"Could not extract recipe data from {url}")
+            self.last_error = "The page loaded, but no recipe was found on it."
             return None
             
         except Exception as e:
             logger.error(f"Error scraping {url}: {str(e)}")
+            self.last_error = f"Reading the page failed: {type(e).__name__}."
             return None
     
     def _extract_json_ld(self, soup: BeautifulSoup) -> Optional[Dict]:

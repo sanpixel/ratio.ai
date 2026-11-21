@@ -173,6 +173,7 @@ class RecipeResponse(BaseModel):
     instructions: List[str] = []
     success: bool
     error: str = None
+    error_detail: str = None  # why it failed; the page shows it to signed-in people
 
 # Root endpoint will be handled by the catch-all route below
 
@@ -344,7 +345,7 @@ async def process_recipe(request: RecipeRequest):
         recipe_data = scraper.scrape_recipe(str(request.url))
         
         if not recipe_data:
-            raise HTTPException(status_code=400, detail="Could not scrape recipe from URL")
+            raise HTTPException(status_code=400, detail=scraper.last_error or "Could not read a recipe from that page")
         
         # Step 2: Parse ingredients using NLP
         parser = RecipeParser()
@@ -390,14 +391,16 @@ async def process_recipe(request: RecipeRequest):
         )
         
     except Exception as e:
-        logger.error(f"Error processing recipe: {str(e)}")
+        detail = e.detail if isinstance(e, HTTPException) else f"{type(e).__name__}: {e}"
+        logger.error(f"Error processing recipe: {detail}")
         return RecipeResponse(
             title="",
             url=str(request.url),
             ingredients=[],
             ratios={},
             success=False,
-            error=str(e)
+            error="Couldn't make a card from that page.",
+            error_detail=str(detail)
         )
 
 class RecalculateRequest(BaseModel):

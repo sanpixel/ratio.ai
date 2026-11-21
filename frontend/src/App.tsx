@@ -421,7 +421,9 @@ useEffect(() => {
       setRecipe(response.data);
       
       if (!response.data.success) {
-        setError(response.data.error || 'Failed to process recipe');
+        // signed-in people see why it failed; everyone else gets the short version
+        const why = response.data.error_detail;
+        setError((response.data.error || 'Failed to process recipe') + (user && why ? ' Why: ' + why : ''));
       } else {
         // Auto-save recipe for logged-in users
         const token = accessToken || localStorage.getItem('access_token');
